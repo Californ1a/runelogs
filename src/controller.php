@@ -2,6 +2,12 @@
 require __DIR__ .  '/ralph.php';
 
 /* DB stuff */
+/*
+ *
+ *	Note to self: if you get duplicates in your db because your code is garbage, flsuh em out with this query:
+ *  	DELETE FROM logs WHERE rowid NOT IN (SELECT min(rowid) FROM logs GROUP BY logs.lg_ts, logs.lg_details);
+ *
+ */
 
 function get_users()
 {
