@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('UTC'); //fuck jagex and fuck php
 require __DIR__ .  '/ralph.php';
 
 /* DB stuff */
@@ -168,23 +169,33 @@ function update_logs()
 	    } else {
 
 	        $last_log_found = false;
+	        $previous_log = (object)[];
+			$previous_log->timestamp = 0;
 
 	        foreach (array_reverse($player_activities) as $activity_index => $activity) { //array_reverse so you start the loop at the bottom, with the oldest log
 	            
+	            $activity->user_id = intval($player_id); //add user id to each log, make sure it's an int
+				$activity->timestamp = strtotime($activity->date); //convert the jagex' date into an epoch timestamp and get rid of the date afterwards
+
 	            if ($last_log_found == true) {
 	                
-	                $activity->user_id = intval($player_id); //add user id to each log, make sure it's an int
-					$activity->timestamp = strtotime($activity->date); //convert the jagex' date into an epoch timestamp and get rid of the date afterwards
+	                //check if previous log was the same timestamp as this one (simultaneous actions), subtract one second from the last log
+	                //to prevent duplicates and secure one log as the last one
+					if ($activity->timestamp == $previous_log->timestamp) {
+						$activity->timestamp -= 1;
+					}
 					unset($activity->date);
 					//if they pass the filter, add them to the filtered array
 					if(filter_log($activity->text)){
 						$filtered_logs[] = $activity;
 					}
+					
 	            }else{
 	                if (match_logs($player_last_log, $activity)) {
 	                    $last_log_found = true;
 	                }
 	            }
+	            $previous_log = $activity;
 	        }
 	        //looped over all the logs and couldnt find the last log -> add all new logs
 	        if ($last_log_found == false) {

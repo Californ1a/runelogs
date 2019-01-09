@@ -14,6 +14,10 @@ $app->get('/update', function ($request, $response, $args) {
     update_logs();
 });
 
+$app->get('/debug', function ($request, $response, $args) {
+    echo strtotime("05-Jan-2019 23:07");
+});
+
 //infinite scroll bullshit
 $app->get('/load/{player}/{page}', function ($request, $response, $args) {
 	$player_name = strtolower($args['player']);
