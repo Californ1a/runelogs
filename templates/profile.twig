@@ -1,0 +1,48 @@
+{% include '/common/header.twig' %}
+    <main>
+        {% if search is defined %}
+
+            <ul class="results">
+                {% for result in results %}
+                    <li class="log-item">
+                        <div class="log-header">
+                            <h2 class="log-title">{{ result.lg_title }}</h2>
+                            <span class="log-timestamp">{{ result.lg_ts|date }}</span>
+                        </div>
+                        <p class="log-details">{{ result.lg_details }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% else %}
+
+            {% if logs is defined and logs is not empty %}
+                <ul class="logs">
+                    {% for log in logs %}
+                        <li class="log-item">
+                            <div class="log-header">
+                                <h2 class="log-title">{{ log.lg_title }}</h2>
+                                <span class="log-timestamp">{{ log.lg_ts|date }}</span>
+                            </div>
+                            <p class="log-details">{{ log.lg_details }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <span class="loading-container"></span>
+            {% else %}
+                <section class='text'>
+                    <p>{{ message }}</p>
+                </section>
+            {% endif %}
+
+        {% endif %}
+
+        <aside class='sidebar'>
+            <h1 class='player-name'>{{ player|capitalize }}</h1>
+            <form action="/{{ player }}" method="post">
+                <input type="text" name="search" placeholder="Search..." />
+                <input type="submit" value="Search" />
+            </form>
+        </aside>
+    </main>
+{% include '/common/footer.twig' %}
