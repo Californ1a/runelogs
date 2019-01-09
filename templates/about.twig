@@ -7,7 +7,8 @@
             <p>We bundle boss kills and apply a <a href="/filter">basic filter</a> to reduce the amount of logs we have to store.</p>
             <p>We update every 15 minutes.</p>
             <p>You can find our source code <a href="https://github.com/dreadnip/runelogs">here</a>. If you see anything you can improve, please do and make a PR.</p>
-        	<p>We're currently saving {{ stats.log_count }} logs for {{ stats.us_id }} players.</p>
+        	{{ dump(stats) }}
+            <p>We're currently saving {{ stats.log_count }} logs for {{ stats.user_count }} players.</p>
         </section>
     </main>
 {% include '/common/footer.twig' %}

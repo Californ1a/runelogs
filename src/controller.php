@@ -130,10 +130,12 @@ function add_logs($logs_to_add)
 function get_statistics()
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
-	$sql = "SELECT DISTINCT users.us_id, count(logs.lg_title) as log_count FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id";
-	$result = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
+	$sql = "SELECT count(*) as user_count FROM users;";
+	$result['user_count'] = $db->query($sql)->fetchAll(PDO::FETCH_OBJ)[0]->user_count;
+	$sql = "SELECT count(*) log_count FROM logs;";
+	$result['log_count'] = $db->query($sql)->fetchAll(PDO::FETCH_OBJ)[0]->log_count;
 	$db = null;
-	return $result[0];
+	return (object)$result;
 }
 
 /* Run-eMetrics stuff */
