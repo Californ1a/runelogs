@@ -83,7 +83,7 @@ function get_player_logs($player_name, $page)
 function get_players_last_log($player_id)
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
-	$stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_id = :player_id ORDER BY logs.lg_ts DESC LIMIT 1");
+	$stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_id = :player_id ORDER BY logs.lg_id DESC LIMIT 1");
 	$stmt->bindParam(':player_id', $player_id);
 	$stmt->execute();
 
@@ -157,7 +157,7 @@ function update_logs()
 
 		if (!$player_last_log) { //no last log, save all
 
-	        foreach($player_activities as $activity){
+	        foreach(array_reverse($player_activities) as $activity){
 				$activity->user_id = intval($player_id); //add user id to each log, make sure it's an int
 				$activity->timestamp = strtotime($activity->date); //convert the jagex' date into an epoch timestamp and get rid of the date afterwards
 				unset($activity->date);
@@ -169,21 +169,13 @@ function update_logs()
 	    } else {
 
 	        $last_log_found = false;
-	        $previous_log = (object)[];
-			$previous_log->timestamp = 0;
 
 	        foreach (array_reverse($player_activities) as $activity_index => $activity) { //array_reverse so you start the loop at the bottom, with the oldest log
-	            
-	            $activity->user_id = intval($player_id); //add user id to each log, make sure it's an int
-				$activity->timestamp = strtotime($activity->date); //convert the jagex' date into an epoch timestamp and get rid of the date afterwards
 
 	            if ($last_log_found == true) {
 	                
-	                //check if previous log was the same timestamp as this one (simultaneous actions), subtract one second from the last log
-	                //to prevent duplicates and secure one log as the last one
-					if ($activity->timestamp == $previous_log->timestamp) {
-						$activity->timestamp -= 1;
-					}
+	            $activity->user_id = intval($player_id); //add user id to each log, make sure it's an int
+				$activity->timestamp = strtotime($activity->date); //convert the jagex' date into an epoch timestamp and get rid of the date afterwards
 					unset($activity->date);
 					//if they pass the filter, add them to the filtered array
 					if(filter_log($activity->text)){
@@ -195,12 +187,11 @@ function update_logs()
 	                    $last_log_found = true;
 	                }
 	            }
-	            $previous_log = $activity;
 	        }
 	        //looped over all the logs and couldnt find the last log -> add all new logs
 	        if ($last_log_found == false) {
 
-	            foreach($player_activities as $activity){
+	            foreach(array_reverse($player_activities) as $activity){
 					//add user id to each log
 					$activity->user_id = intval($player_id);
 					$activity->timestamp = strtotime($activity->date);
