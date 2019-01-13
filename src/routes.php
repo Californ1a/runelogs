@@ -1,5 +1,12 @@
 <?php
 // Routes
+$app->get('/sitemap', function ($request, $response, $args) {
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'text/xml')
+        ->write(print_sitemap());
+});
+
 $app->get('/filter', function ($request, $response, $args) {
     return $this->view->fetch('filter.twig', $args);
 });
@@ -7,16 +14,6 @@ $app->get('/filter', function ($request, $response, $args) {
 $app->get('/about', function ($request, $response, $args) {
     $args['stats'] = get_statistics();
     return $this->view->fetch('about.twig', $args);
-});
-
-$app->get('/toggle-nightmode', function ($request, $response, $args) {
-
-    if (!isset($_SESSION['nightmode'])) {
-        $_SESSION['nightmode'] = true;
-    } else {
-        $_SESSION['nightmode'] = !$_SESSION['nightmode'];
-    }
-    return $_SESSION['nightmode'];
 });
 
 //infinite scroll bullshit

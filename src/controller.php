@@ -248,3 +248,21 @@ function array_pintersect(array $needles, array $haystack)
     }
     return false;
 }
+
+function print_sitemap()
+{
+	$base_url = 'https://runelo.gs';
+	$urls = ["/","/about","/filter"];
+
+	echo '<?xml version="1.0" encoding="utf-8"?>'.PHP_EOL.
+	'<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+
+	foreach ($urls as $url) {
+	    echo '<url>' . PHP_EOL;
+	    echo '<loc>'.$base_url.$url.'</loc>' . PHP_EOL;
+	    echo '<changefreq>daily</changefreq>' . PHP_EOL;
+	    echo '</url>' . PHP_EOL;
+	}
+
+	echo '</urlset>' . PHP_EOL;
+}
