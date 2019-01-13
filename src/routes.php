@@ -9,13 +9,14 @@ $app->get('/about', function ($request, $response, $args) {
     return $this->view->fetch('about.twig', $args);
 });
 
+$app->get('/toggle-nightmode', function ($request, $response, $args) {
 
-$app->get('/update', function ($request, $response, $args) {
-    update_logs();
-});
-
-$app->get('/debug', function ($request, $response, $args) {
-    echo strtotime("05-Jan-2019 23:07");
+    if (!isset($_SESSION['nightmode'])) {
+        $_SESSION['nightmode'] = true;
+    } else {
+        $_SESSION['nightmode'] = !$_SESSION['nightmode'];
+    }
+    return $_SESSION['nightmode'];
 });
 
 //infinite scroll bullshit

@@ -4,7 +4,11 @@ var pollingForData = false;
 var xhr = new XMLHttpRequest();
 var contentContainer = document.getElementsByClassName('logs')[0];
 var loadingContainer = document.getElementsByClassName('loading-container')[0];
-var player_name = document.querySelector('.player-name').textContent;
+var player_page_title = document.querySelector('.player-name');
+
+if(player_page_title != null){
+  var player_name = player_page_title.textContent;
+}
 
 function getDistFromBottom () {
   
@@ -52,15 +56,8 @@ xhr.onload = function() {
       
       contentContainer.appendChild(logItem);
     })
-    
-    // removing the spinner
-    //loadingContainer.classList.remove('no-content');
   }
 };
-
-//xhr.open('GET', 'http://localhost:8080/load/'+player_name+'/1', true);
-//xhr.send();
-//pollingForData = true;
 
 document.addEventListener('scroll', function() {
   distToBottom = getDistFromBottom();
@@ -74,3 +71,32 @@ document.addEventListener('scroll', function() {
     xhr.send();
   }
 });
+
+/*
+Nightmode toggle (global)
+*/
+var body = document.querySelector('body');
+var is_nightmode = body.classList.contains('is-nightmode');
+var night_mode_toggle = document.querySelector('.night-mode-toggle');
+var night_mode_icon = night_mode_toggle.querySelector(':scope .fas');
+
+function toggle_night_mode(evt = false) {
+  if (evt) evt.preventDefault();
+
+  body.classList.toggle('is-nightmode');
+  is_nightmode = !is_nightmode;
+  night_mode_icon.className = is_nightmode == true ? 'fas fa-sun' : 'fas fa-moon';
+  localStorage.setItem("nightmode", JSON.stringify(is_nightmode));
+}
+
+if(night_mode_toggle != null){
+    night_mode_toggle.addEventListener('click', toggle_night_mode);
+}
+
+if (localStorage.getItem("nightmode") === null) {
+    localStorage.setItem("nightmode", JSON.stringify(is_nightmode));
+} else if (is_nightmode !== JSON.parse(localStorage.getItem("nightmode"))){
+    toggle_night_mode();
+} else {
+
+}
