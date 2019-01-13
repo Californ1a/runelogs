@@ -15,6 +15,7 @@ body {
 }
 
 h1 {
+	font-size: 2rem;
 	margin-bottom: 1rem;
 }
 
@@ -83,4 +84,25 @@ main {
 	color: #6e6e6e;
 	margin-left: .5rem;
 	align-self: flex-end;
+}
+
+@media screen and (max-width: 30em) {
+	body {
+		flex-direction: column;
+		padding: 1.5rem;
+	}
+	header {
+		position: relative;
+		margin-bottom: 1.5rem;
+	}
+	main {
+		margin-left: 0;
+		flex-direction: column;
+	}
+	.sidebar {
+		position: relative;
+		right: 0;
+		max-width: 250px;
+		margin-bottom: 1.5rem;
+	}
 }

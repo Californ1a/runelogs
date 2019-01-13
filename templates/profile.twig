@@ -1,5 +1,14 @@
 {% include '/common/header.twig' %}
     <main>
+
+        <aside class='sidebar'>
+            <h1 class='player-name'>{{ player|capitalize }}</h1>
+            <form action="/{{ player }}" method="post">
+                <input type="text" name="search" placeholder="Search..." />
+                <input type="submit" value="Search" />
+            </form>
+        </aside>
+        
         {% if search is defined %}
 
             <ul class="results">
@@ -37,12 +46,5 @@
 
         {% endif %}
 
-        <aside class='sidebar'>
-            <h1 class='player-name'>{{ player|capitalize }}</h1>
-            <form action="/{{ player }}" method="post">
-                <input type="text" name="search" placeholder="Search..." />
-                <input type="submit" value="Search" />
-            </form>
-        </aside>
     </main>
 {% include '/common/footer.twig' %}
