@@ -138,13 +138,13 @@ main {
 
 .is-nightmode {
   background-color: #263137;
-  color: #ccd1d7;
+  color: #bdc3ce;
 }
 
 .is-nightmode code {
 	display: block;
-	background-color: #ccd1d7;
-	color: #333;
+	background-color: #1e272b;
+	color: #bdc3ce;
 	margin-bottom: 1rem;
 	padding: 1rem;
 }
@@ -160,11 +160,11 @@ main {
 
 .is-nightmode .search form input[type="text"] {
 	background-color: #263137;
-	color: #ccd1d7;
+	color: #bdc3ce;
 }
 
 .is-nightmode .search form input[type="text"]::placeholder {
-	color: #ccd1d7;
+	color: #bdc3ce;
 }
 
 
@@ -175,12 +175,12 @@ main {
 		flex-direction: column;
 		padding: 1.5rem;
 	}
-	header {
+	.header {
 		position: relative;
 		margin-bottom: 1.5rem;
 		flex-direction: row;
 	}
-	header img {
+	.header img {
 		margin-bottom: 0;
 		margin-right: 1rem;
 	}
