@@ -8,6 +8,7 @@
 
 body {
 	font-family: sans-serif;
+	background-color: #efefef;
 	color: #333;
 	font-size: 100%;
 	border-top: solid 5px #3597d3;
@@ -44,7 +45,7 @@ code {
 	padding: 1rem;
 }
 
-header {
+.header {
 	position: fixed;
 	display: flex;
 	flex-direction: column;
@@ -59,6 +60,7 @@ header img {
 main {
 	position: relative;
 	display: flex;
+	flex-direction: column;
 	margin-left: calc(50px + 2rem);
 }
 
@@ -66,11 +68,27 @@ main {
 	max-width: 40rem;
 }
 
-.sidebar {
-	position: fixed;
-	right: 2rem;
-	max-width: 250px;
+.search {
+	height: 1rem;
+	margin-bottom: .5rem;
 }
+
+.search form {
+	display: flex;
+}
+
+.search form input[type="text"] {
+	border: none;
+	height: 1rem;
+	background-color: #efefef;
+	flex: 1;
+}
+
+.search form input[type="submit"] {
+	border: none;
+	background-color: transparent;
+}
+
 .night-mode-toggle {
 	max-width: 16px;
 }
@@ -83,20 +101,37 @@ main {
 	max-width: 40rem;
 }
 
+.log-item {
+	padding: 1rem;
+	background-color: #fff;
+	margin-bottom: 1rem;
+	color: rgba(60,67,80,.8);
+}
+
 .log-header {
 	display: flex;
 	margin-bottom: .5rem;
 }
 
 .log-title {
-	font-size: 1.2rem;
+	font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: #000;
+    flex: 1;
+}
+
+.log-details {
+	font-size: .875rem;
+	margin-bottom: 0;
 }
 
 .log-timestamp {
-	font-size: .7rem;
-	color: #6e6e6e;
+	font-weight: 400;
+    font-size: .65rem;
+    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
 	margin-left: .5rem;
-	align-self: flex-end;
 }
 
 /* Nightmode */
@@ -105,6 +140,7 @@ main {
   background-color: #263137;
   color: #ccd1d7;
 }
+
 .is-nightmode code {
 	display: block;
 	background-color: #ccd1d7;
@@ -112,6 +148,25 @@ main {
 	margin-bottom: 1rem;
 	padding: 1rem;
 }
+
+.is-nightmode .log-item {
+	background-color: #1e272b;
+	color: #bdc3ce;
+}
+
+.is-nightmode .log-title {
+	color: #fff;
+}
+
+.is-nightmode .search form input[type="text"] {
+	background-color: #263137;
+	color: #ccd1d7;
+}
+
+.is-nightmode .search form input[type="text"]::placeholder {
+	color: #ccd1d7;
+}
+
 
 /* Mobile */
 
@@ -132,11 +187,5 @@ main {
 	main {
 		margin-left: 0;
 		flex-direction: column;
-	}
-	.sidebar {
-		position: relative;
-		right: 0;
-		max-width: 250px;
-		margin-bottom: 1.5rem;
 	}
 }

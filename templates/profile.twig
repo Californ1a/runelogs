@@ -1,27 +1,33 @@
 {% include '/common/header.twig' %}
     <main>
 
-        <aside class='sidebar'>
-            <h1 class='player-name'>{{ player|capitalize }}</h1>
+        <header class='search'>
             <form action="/{{ player }}" method="post">
-                <input type="text" name="search" placeholder="Search..." />
-                <input type="submit" value="Search" />
+                <input type="text" name="search" placeholder="Filter on..." {{ (search is defined) ? 'value=' ~ search : '' }} />
+                <input type="submit" value="" />
             </form>
-        </aside>
+        </header>
         
         {% if search is defined %}
 
-            <ul class="results">
-                {% for result in results %}
-                    <li class="log-item">
-                        <div class="log-header">
-                            <h2 class="log-title">{{ result.lg_title }}</h2>
-                            <span class="log-timestamp">{{ result.lg_ts|date }}</span>
-                        </div>
-                        <p class="log-details">{{ result.lg_details }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
+            {% if results is not empty %}
+
+                <ul class="results">
+                    {% for result in results %}
+                        <li class="log-item">
+                            <div class="log-header">
+                                <h2 class="log-title">{{ result.lg_title }}</h2>
+                                <span class="log-timestamp">{{ result.lg_ts|date }}</span>
+                            </div>
+                            <p class="log-details">{{ result.lg_details }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <section class='text'>
+                    <p>No results</p>
+                </section>
+            {% endif %}
 
         {% else %}
 
