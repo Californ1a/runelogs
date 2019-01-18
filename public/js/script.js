@@ -97,6 +97,4 @@ if (localStorage.getItem("nightmode") === null) {
     localStorage.setItem("nightmode", JSON.stringify(is_nightmode));
 } else if (is_nightmode !== JSON.parse(localStorage.getItem("nightmode"))){
     toggle_night_mode();
-} else {
-
 }

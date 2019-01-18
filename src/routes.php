@@ -33,6 +33,9 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
         //validate the player name
         $player_name = $args['player'];
 
+        //set the cookie for last visited profile
+        setcookie("rsn",$player_name ,time()+3600*24*365,'/','runelo.gs');
+
         //check if post (search)
         if ($request->isPost()) {
 
@@ -66,6 +69,12 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
         return $this->view->fetch('profile.twig', $args);
 
     } else {
+
+        if (!empty($_COOKIE['rsn'])) {   
+            $args["rsn"] = $_COOKIE['rsn'];
+        } else {
+            $args["rsn"] = "danie";
+        }
 
         return $this->view->fetch('index.twig', $args);
     }

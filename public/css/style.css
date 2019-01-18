@@ -32,6 +32,10 @@ ul {
 	margin: 0 0 1rem 2rem;
 }
 
+.profile-link {
+	text-decoration: none;
+}
+
 code {
 	display: block;
 	background-color: #333;
