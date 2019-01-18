@@ -10,6 +10,14 @@ if(player_page_title != null){
   var player_name = player_page_title.textContent;
 }
 
+let rsn = window.location.href.split("/")[3];
+
+if(rsn) {
+  var player_name = rsn;
+}else{
+ 
+}
+
 function getDistFromBottom () {
   
   var scrollPosition = window.pageYOffset;
