@@ -11,7 +11,6 @@ body {
 	background-color: #efefef;
 	color: #333;
 	font-size: 100%;
-	border-top: solid 5px #3597d3;
 	padding: 2rem;
 	display: flex;
 }
@@ -170,7 +169,7 @@ main {
 
 /* Mobile */
 
-@media screen and (max-width: 30em) {
+@media screen and (max-width: 30rem) {
 	body {
 		flex-direction: column;
 		padding: 1.5rem;
@@ -188,4 +187,18 @@ main {
 		margin-left: 0;
 		flex-direction: column;
 	}
+}
+
+@media screen and (min-width: 50rem) {
+	.logs, .results {
+		width: 40rem;
+	}
+}
+
+.night {
+	color: #bdc3ce;
+}
+
+.day {
+	color: #333;
 }

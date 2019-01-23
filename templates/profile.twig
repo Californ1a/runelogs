@@ -1,15 +1,15 @@
 {% include '/common/header.twig' %}
     <main>
-
-        <header class='search'>
-            <form action="/{{ player }}" method="post">
-                <input type="text" name="search" placeholder="Filter on..." {{ (search is defined) ? 'value=' ~ search : '' }} />
-                <input type="submit" value="" />
-            </form>
-        </header>
         
         {% if search is defined %}
 
+            <header class='search'>
+                <form action="/{{ player }}" method="post">
+                    <input type="text" name="search" value="{{ search }}" />
+                    <input type="submit" value="" />
+                </form>
+            </header>
+                
             {% if results is not empty %}
 
                 <ul class="results">
@@ -32,6 +32,14 @@
         {% else %}
 
             {% if logs is defined and logs is not empty %}
+
+                <header class='search'>
+                    <form action="/{{ player }}" method="post">
+                        <input type="text" name="search" placeholder="Filter on.." />
+                        <input type="submit" value="" />
+                    </form>
+                </header>
+
                 <ul class="logs">
                     {% for log in logs %}
                         <li class="log-item">
