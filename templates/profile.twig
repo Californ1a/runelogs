@@ -5,8 +5,8 @@
 
             <header class='search'>
                 <form action="/{{ player }}" method="post">
-                    <input type="text" name="search" value="{{ search }}" />
-                    <input type="submit" value="" />
+                    <input type="text" name="search" aria-label="search" value="{{ search }}" />
+                    <input type="submit" aria-label="search-submit" value="" />
                 </form>
             </header>
                 
@@ -35,8 +35,8 @@
 
                 <header class='search'>
                     <form action="/{{ player }}" method="post">
-                        <input type="text" name="search" placeholder="Filter on.." />
-                        <input type="submit" value="" />
+                        <input type="text" name="search" aria-label="search" placeholder="Filter on.." />
+                        <input type="submit" aria-label="search-submit" value="" />
                     </form>
                 </header>
 

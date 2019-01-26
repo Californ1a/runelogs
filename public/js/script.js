@@ -93,7 +93,7 @@ function toggle_night_mode(evt = false) {
 
   body.classList.toggle('is-nightmode');
   is_nightmode = !is_nightmode;
-  night_mode_icon.className = is_nightmode == true ? 'fas fa-toggle-on night' : 'fas fa-toggle-off day';
+  night_mode_toggle.classList.toggle('night');
   localStorage.setItem("nightmode", JSON.stringify(is_nightmode));
 }
 

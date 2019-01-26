@@ -31,7 +31,7 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
     if(isset($args['player'])){
 
         //validate the player name
-        $player_name = $args['player'];
+        $player_name = norm($args['player']);
 
         //set the cookie for last visited profile
         setcookie("rsn",$player_name ,time()+3600*24*365,'/','runelo.gs');

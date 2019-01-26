@@ -235,6 +235,11 @@ function match_logs($db_log, $rm_log) //first one is from db, second one is from
 
 /* Helpers */
 
+function norm($string)
+{
+	return str_replace(' ', '+', htmlentities(utf8_encode(strtolower($string))));
+}
+
 function array_pintersect(array $needles, array $haystack)
 {
     foreach ($haystack as $hay) {

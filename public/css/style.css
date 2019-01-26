@@ -4,7 +4,8 @@
 	box-sizing: border-box;
 	-webkit-font-smoothing: antialiased;
 }
-/* Other styles */
+
+/* Basics */
 
 body {
 	font-family: sans-serif;
@@ -15,13 +16,15 @@ body {
 	display: flex;
 }
 
+/* Basics */
+
 h1 {
 	font-size: 2rem;
 	margin-bottom: 1rem;
 }
 
 a {
-	color: #3597d3;
+	color: #2882b9;
 }
 
 p {
@@ -32,10 +35,6 @@ ul {
 	margin: 0 0 1rem 2rem;
 }
 
-.profile-link {
-	text-decoration: none;
-}
-
 code {
 	display: block;
 	background-color: #333;
@@ -43,6 +42,12 @@ code {
 	margin-bottom: 1rem;
 	padding: 1rem;
 }
+
+.profile-link {
+	text-decoration: none;
+}
+
+/* Layout */
 
 .header {
 	position: fixed;
@@ -67,6 +72,8 @@ main {
 	max-width: 40rem;
 }
 
+/* Search */
+
 .search {
 	height: 1rem;
 	margin-bottom: .5rem;
@@ -86,10 +93,6 @@ main {
 .search form input[type="submit"] {
 	border: none;
 	background-color: transparent;
-}
-
-.night-mode-toggle {
-	max-width: 16px;
 }
 
 /* Log list */
@@ -114,11 +117,11 @@ main {
 
 .log-title {
 	font-weight: 700;
-    font-size: 1rem;
-    line-height: 1.5;
-    letter-spacing: 0;
-    color: #000;
-    flex: 1;
+	font-size: 1rem;
+	line-height: 1.5;
+	letter-spacing: 0;
+	color: #000;
+	flex: 1;
 }
 
 .log-details {
@@ -128,16 +131,28 @@ main {
 
 .log-timestamp {
 	font-weight: 400;
-    font-size: .65rem;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+	font-size: .65rem;
+	font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
 	margin-left: .5rem;
 }
 
 /* Nightmode */
 
+.night-mode-toggle {
+	width: 1.2rem;
+	height: 1.2rem;
+	background: url('../img/bulb.jpg');
+	background-size: cover;
+	filter: grayscale(100%);
+}
+
+.night {
+	filter: grayscale(0%);
+}
+
 .is-nightmode {
-  background-color: #263137;
-  color: #bdc3ce;
+	background-color: #263137;
+	color: #bdc3ce;
 }
 
 .is-nightmode code {
@@ -193,12 +208,4 @@ main {
 	.logs, .results {
 		width: 40rem;
 	}
-}
-
-.night {
-	color: #bdc3ce;
-}
-
-.day {
-	color: #333;
 }
