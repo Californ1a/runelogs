@@ -14,14 +14,9 @@ function get_users()
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
 	$sql = "SELECT * FROM users";
-	$result = $db->query($sql)->fetchAll(PDO::FETCH_KEY_PAIR);
+	$result = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
 	$db = null;
-	$output = [];
-	foreach($result as $key => $name){
-		$trim_name = str_replace(' ', '+', htmlentities(utf8_encode(strtolower($name))));
-		$output[$trim_name] = $key;
-	}
-	return $output;
+	return $result;
 }
 
 function get_user($user_id)
@@ -32,8 +27,8 @@ function get_user($user_id)
 	$stmt->execute();
 
 	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	return $result[0];
 	$db = null;
+	return $result[0];
 }
 
 function check_user($player_name)
@@ -44,23 +39,25 @@ function check_user($player_name)
 	$stmt->execute();
 
 	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$db = null;
 	if(isset($result[0])){
 		return true;
 	}else{
 		return false;
 	}
-	$db = null;
 }
 
-function add_user($player_name)
+function add_user($player_name, $player_clan)
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
-	$stmt = $db->prepare("INSERT INTO users VALUES (null, :player_name)");
+	$stmt = $db->prepare("INSERT INTO users VALUES (null, :player_name, :player_clan)");
 	$stmt->bindParam(':player_name', $player_name);
+	$stmt->bindParam(':player_clan', $player_clan);
 
 	$stmt->execute();
-	return $db->lastInsertId(); //user id just created
+	$last_id = $db->lastInsertId();
 	$db = null;
+	return $last_id; //user id just created
 }
 
 
@@ -76,8 +73,8 @@ function get_player_logs($player_name, $page)
 	$stmt->execute();
 
 	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	return $result;
 	$db = null;
+	return $result;
 }
 
 function get_players_last_log($player_id)
@@ -87,13 +84,13 @@ function get_players_last_log($player_id)
 	$stmt->bindParam(':player_id', $player_id);
 	$stmt->execute();
 
-	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$result = $stmt->fetchAll(PDO::FETCH_OBJ);
+	$db = null;
 	if(isset($result[0])){
-		return (object)$result[0];
+		return $result[0];
 	}else{
 		return false;
 	}
-	$db = null;
 }
 
 function search($player_name, $search_term)
@@ -106,8 +103,8 @@ function search($player_name, $search_term)
 	$stmt->execute();
 
 	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-	return $result;
 	$db = null;
+	return $result;
 }
 
 function add_logs($logs_to_add)
@@ -139,75 +136,137 @@ function get_statistics()
 	return (object)$result;
 }
 
-/* Run-eMetrics stuff */
+/* 
+ * Run-eMetrics stuff
+ *		the real big boi function
+ *	will document 
+ */
 
 function update_logs()
-{
+{	
+	/*
+	 *	Declare a new instance of the Ralph API we use to fetch Runemetric data
+	 *
+	 */
+
 	$r = new \Ralph\api();
-	$users = get_users(); //get a name indexed list of all the users in our database
-	$runemetrics_objects = $r->get_bulk_profiles($users); //get the runemetrics profiles of all these users
-	$filtered_logs = [];
 
-	foreach($runemetrics_objects as $runemetric_object){
+	/*
+	 *	Fetch a list of all our users, and grab the Runemetrics profile for each user
+	 *
+	 */
 
-		$player_id = $runemetric_object->id; //get the player id from the runemetrics object
-		echo 'Checking user '.$player_id.': ';
-		$player_last_log = get_players_last_log($player_id); //get the last log for that player from our database
-		$player_activities = $runemetric_object->activities; //the last 20 activites from the players' runemetrics object
+	$users = get_users();
+	$player_profiles = $r->get_bulk_profiles($users);
 
-		if (!$player_last_log) { //no last log, save all
+	/*
+	 *	Prepare an empty array to hold all the logs we will add to the db (in one transaction)
+	 *
+	 */
 
-	        foreach(array_reverse($player_activities) as $activity){
-				$activity->user_id = intval($player_id); //add user id to each log, make sure it's an int
-				$activity->timestamp = strtotime($activity->date); //convert the jagex' date into an epoch timestamp and get rid of the date afterwards
+	$list_of_logs_to_add = [];
+
+	/*
+	 *	Start looping all of the Runemetric profiles
+	 *
+	 */
+
+	foreach($player_profiles as $player_profile){
+		
+		echo '#'.$player_profile->id.' '.$player_profile->name.' | '; //debug output
+
+		/*
+		 *	Check for RM errors, possible ones are NO_PROFILE or PROFILE_PRIVATE
+		 *
+		 */
+		if (isset($player_profile->error)) {
+			//try looking for name changes
+
+			//get clan name from user record
+
+			//if no one is found, mark that player as broken
+			echo 'Profile error: '.$player_profile->error."\r\n";
+
+		} else {
+			
+			$player_activities = $player_profile->activities; //the last 20 activites from the players' runemetrics object
+
+			/*
+			 *	Filter all player activities on keywords
+			 *
+			 */
+
+			$filtered_list = [];
+
+			foreach ($player_activities as &$activity) {
+				$activity->user_id = intval($player_profile->id);
+				$activity->timestamp = strtotime($activity->date);
 				unset($activity->date);
-				//if they pass the filter, add them to the filtered array
 				if(filter_log($activity->text)){
-					$filtered_logs[] = $activity;
+					$filtered_list[] = $activity;
 				}
 			}
-	    } else {
 
-	        $last_log_found = false;
+			/*
+			 *	Proceed with the linking process
+			 *	During the linking process, we will use the last log found in the db (the link) to
+			 *
+			 */
 
-	        foreach (array_reverse($player_activities) as $activity_index => $activity) { //array_reverse so you start the loop at the bottom, with the oldest log
+			if (empty($filtered_list)) {
 
-	            if ($last_log_found == true) {
-	                
-	            $activity->user_id = intval($player_id); //add user id to each log, make sure it's an int
-				$activity->timestamp = strtotime($activity->date); //convert the jagex' date into an epoch timestamp and get rid of the date afterwards
-					unset($activity->date);
-					//if they pass the filter, add them to the filtered array
-					if(filter_log($activity->text)){
-						$filtered_logs[] = $activity;
-					}
-					
-	            }else{
-	                if (match_logs($player_last_log, $activity)) {
-	                    $last_log_found = true;
-	                }
-	            }
-	        }
-	        //looped over all the logs and couldnt find the last log -> add all new logs
-	        if ($last_log_found == false) {
+				echo 'no new logs found'."\r\n";
 
-	            foreach(array_reverse($player_activities) as $activity){
-					//add user id to each log
-					$activity->user_id = intval($player_id);
-					$activity->timestamp = strtotime($activity->date);
-					unset($activity->date);
-					//if they pass the filter, add them to the filtered array
-					if(filter_log($activity->text)){
-						$filtered_logs[] = $activity;
-					}
-				}
-	        }
-	    }
-	    echo "adding ".count($filtered_logs)." new logs."."\r\n";
+			} else {
+
+				$player_last_log = get_players_last_log($player_profile->id); //get the last log for that player from our database
+
+				if (!$player_last_log) { //no last log, save all
+
+					echo 'no link, saving all'."\r\n";
+			        $list_of_logs_to_add = array_merge($list_of_logs_to_add, $filtered_list);
+
+			    } else {
+
+			        $last_log_found = false;
+
+			        foreach (array_reverse($filtered_list) as $act_index => $activity) { //array_reverse so you start the loop at the bottom, with the oldest log
+
+			            if ($last_log_found == true) {
+			                
+			            	$list_of_logs_to_add[] = $activity;
+							
+			            }else{
+			                if (match_logs($player_last_log, $activity)) {
+			                	if ($act_index == (count($filtered_list) - 1)) {
+			                		echo 'link is up to date'."\r\n";
+			                	} else {
+			                		echo 'link found at index '.$act_index.'/'.count($filtered_list).', saving '.(count($filtered_list) - $act_index).' newer ones'."\r\n";
+			                	}
+			                    $last_log_found = true;
+			                }
+			            }
+			        }
+
+			        /*
+					 *	Looped over all the logs and couldnt find the link -> add all new logs
+					 *
+					 */
+
+			        if ($last_log_found == false) {
+
+			        	echo 'link not found, saving all'."\r\n";
+			        	$list_of_logs_to_add = array_merge($list_of_logs_to_add, $filtered_list);
+			        }
+			    }
+
+			}
+    
+		}
+		
 	}
-	
-	//and like that.. he's gone
-	add_logs($filtered_logs);
+
+	add_logs($list_of_logs_to_add);
 }
 
 function filter_log($log_text)
@@ -226,10 +285,20 @@ function filter_log($log_text)
 
 function match_logs($db_log, $rm_log) //first one is from db, second one is from RM
 {   
-    if ($db_log->lg_title == $rm_log->text && $db_log->lg_ts == strtotime($rm_log->date)) {
+    if ($db_log->lg_title == $rm_log->text && $db_log->lg_ts == $rm_log->timestamp) {
         return true;
     } else {
         return false;
+    }
+}
+
+function get_player_clan($player_name)
+{
+    $r = new \Ralph\api();
+    if (isset($r->get_details($player_name)->clan)) {
+    	return $r->get_details($player_name)->clan;
+    } else {
+    	return null;
     }
 }
 

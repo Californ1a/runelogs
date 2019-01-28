@@ -16,6 +16,13 @@ $app->get('/about', function ($request, $response, $args) {
     return $this->view->fetch('about.twig', $args);
 });
 
+$app->get('/test', function ($request, $response, $args) {
+    $r = new \Ralph\api();
+    $names = $r->scrape_ranking(10797);
+    //get clan list for that record
+    var_dump($names);
+});
+
 //infinite scroll bullshit
 $app->get('/load/{player}/{page}', function ($request, $response, $args) {
 	$player_name = strtolower($args['player']);
@@ -57,7 +64,8 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
                     $args['message'] = "That's not an active Runescape account with a public Adventure Log.";
                 } else {
                     if(!check_user($player_name)){
-                        add_user($player_name);
+                        $player_clan = get_player_clan($player_name);
+                        add_user($player_name, $player_clan);
                         $args['message'] = "We've added your account to our database. Wait for the next update cycle to hit for your logs to show up.";
                     } else {
                         $args['message'] = "We already have that account in our database. Wait for the next update cycle to hit for your logs to show up.";

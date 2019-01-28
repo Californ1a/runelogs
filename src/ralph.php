@@ -40,6 +40,17 @@ Class api
      *  base functions
      */
 
+    public function get_raw($url)
+    {
+        $response = $this->client->request('GET', $url);
+        if ($response->getStatusCode() == 200) {
+            $body = $response->getBody();
+            return $body->getContents();
+        } else {
+            return false;
+        }
+    }
+    
     public function get_json($url, $trim_callback = false)
     {
 		//perform the request
@@ -84,6 +95,11 @@ Class api
 		return $this->get_json($this->base_runemetrics_url.'profile/profile?user='.$this->norm($player_name).'&activities=20');
 	}
 
+    public function get_details($player_name)
+    {
+        return $this->get_json($this->base_legacy_url.'m=website-data/playerDetails.ws?membership=true&names=["'.$this->norm($player_name).'"]&callback=angular.callbacks._0', true)[0];
+    }
+
     public function get_avatar($player_name)
     {
     	return $this->base_legacy_url.'m=avatar-rs/'.$this->norm($player_name).'/chat.png';
@@ -97,8 +113,8 @@ Class api
 
         $requests = function ($list)
         {
-            foreach ($list as $player_name => $player_id) {
-                yield new Request('GET', $this->base_runemetrics_url.'profile/profile?user='.$this->norm($player_name).'&activities=20');
+            foreach ($list as $player_obj) {
+                yield new Request('GET', $this->base_runemetrics_url.'profile/profile?user='.$this->norm($player_obj->us_name).'&activities=20');
             }
         };
 
@@ -106,17 +122,22 @@ Class api
             'concurrency' => 25,
             'fulfilled' => function ($response, $index) use ($list, &$output)
             {
+                $output_object = (object)[];
+                $output_object->id = $list[$index]->us_id;
+                $output_object->name = $list[$index]->us_name;
+                $output_object->clan = $list[$index]->us_clan;
 
                 if ($response->getStatusCode() == 200) {
 
                     $profile = json_decode($response->getBody()->getContents());
                     if(!isset($profile->error)){
-                    	$output_object = (object)[];
-                        $output_object->id = $list[$this->norm($profile->name)];
                         $output_object->activities = $profile->activities;
-                        $output[] = $output_object;
+                    } else {
+                        $output_object->error = $profile->error;
                     }
                 }
+
+                $output[] = $output_object;
             },
             'rejected' => function ($reason, $index)
             {
@@ -131,6 +152,31 @@ Class api
         return $output;
     }
 
+    public function get_clan_list($clan_name)
+    {
+        $raw_list = $this->get_raw($this->base_legacy_url.'m=clan-hiscores/members_lite.ws?clanName='.$this->norm($clan_name));
+        $check = explode(",", $raw_list, 2);
+        if ($check[0] == 'Clanmate') {
+            $clan_list = [];
+            $raw_list = explode("\n", $raw_list);
+            foreach ($raw_list as $key => $row) {
+                if ($key != 0 && $key <= (count($raw_list)-2)) {
+                    $row_item = explode(",", $row);
+                    $name = htmlentities(utf8_encode($row_item[0]));
+                    $clan_list[] = (object)array(
+                        'name' => str_replace('&nbsp;', ' ', $name),
+                        'rank' => $row_item[1],
+                        'clan_xp' => $row_item[2],
+                        'clan_kills' => $row_item[3]
+                    );
+                }
+            }
+            return $clan_list;
+        } else {
+            return (object)['error' => 'CLAN NOT FOUND'];
+        }
+    }
+
 	/*
 	 *  Helper functions
 	 */
@@ -139,5 +185,12 @@ Class api
 	{
 		return str_replace(' ', '+', htmlentities(utf8_encode(strtolower($string))));
 	}
+
+    private function trim_callback($response_string)
+    {
+        $response_string = substr($response_string, 21);
+        $response_string = substr($response_string, 0, -3);
+        return $response_string;
+    }
 
 }
