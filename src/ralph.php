@@ -51,7 +51,7 @@ Class api
         }
     }
     
-    public function get_json($url, $trim_callback = false)
+    public function get_json(string $url, $trim_callback = false)
     {
 		//perform the request
     	$response = $this->client->request('GET', $url);
@@ -105,7 +105,7 @@ Class api
     	return $this->base_legacy_url.'m=avatar-rs/'.$this->norm($player_name).'/chat.png';
     }
 
-    public function get_bulk_profiles($list)
+    public function get_bulk_profiles(array $list) : array
     {
         $output = [];
 
@@ -182,7 +182,7 @@ Class api
 	 *  Helper functions
 	 */
 
-	public function norm($string)
+	public function norm(string $string) : string
 	{
 		return str_replace(' ', '+', htmlentities(utf8_encode(strtolower($string))));
 	}

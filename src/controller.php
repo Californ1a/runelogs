@@ -113,18 +113,18 @@ function search(string $player_name, string $search_term) : array
 
 function add_logs(array $logs_to_add)
 {
-    $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
-    $db->beginTransaction();
-    $stmt = $db->prepare("INSERT INTO logs VALUES (null, :user_id, :log_title, :log_details, :log_timestamp)");
-    foreach ($logs_to_add as $log) {
-        $stmt->bindParam(':user_id', $log->user_id);
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
+	$db->beginTransaction();
+	$stmt = $db->prepare("INSERT INTO logs VALUES (null, :user_id, :log_title, :log_details, :log_timestamp)");
+	foreach ($logs_to_add as $log) {
+		$stmt->bindParam(':user_id', $log->user_id);
 		$stmt->bindParam(':log_title', $log->text);
 		$stmt->bindParam(':log_details', $log->details);
 		$stmt->bindParam(':log_timestamp', $log->timestamp);
-        $stmt->execute();
-    }
-    $db->commit();
-    $db = null;
+		$stmt->execute();
+	}
+	$db->commit();
+	$db = null;
 }
 
 function get_statistics() : object
@@ -183,28 +183,28 @@ function update_logs()
 				if (!$player_last_log) { //no last log, save all
 
 					echo 'no link, saving all'."\r\n";
-			        $list_of_logs_to_add = array_merge($list_of_logs_to_add, $filtered_list);
+					$list_of_logs_to_add = array_merge($list_of_logs_to_add, $filtered_list);
 
-			    } else {
+				} else {
 
-			        $last_log_found = false;
+					$last_log_found = false;
 
 			        foreach (array_reverse($filtered_list) as $act_index => $activity) { //array_reverse so you start the loop at the bottom, with the oldest log
 
-			            if ($last_log_found == true) {
-			                
-			            	$list_of_logs_to_add[] = $activity;
-							
-			            }else{
-			                if (match_logs($player_last_log, $activity)) {
-			                	if ($act_index == (count($filtered_list) - 1)) {
-			                		echo 'link is up to date'."\r\n";
-			                	} else {
-			                		echo 'link found at index '.$act_index.'/'.count($filtered_list).', saving '.(count($filtered_list) - $act_index).' newer ones'."\r\n";
-			                	}
-			                    $last_log_found = true;
-			                }
-			            }
+			        	if ($last_log_found == true) {
+			        		
+			        		$list_of_logs_to_add[] = $activity;
+			        		
+			        	}else{
+			        		if (match_logs($player_last_log, $activity)) {
+			        			if ($act_index == (count($filtered_list) - 1)) {
+			        				echo 'link is up to date'."\r\n";
+			        			} else {
+			        				echo 'link found at index '.$act_index.'/'.count($filtered_list).', saving '.(count($filtered_list) - $act_index).' newer ones'."\r\n";
+			        			}
+			        			$last_log_found = true;
+			        		}
+			        	}
 			        }
 
 			        if ($last_log_found == false) {
@@ -213,11 +213,8 @@ function update_logs()
 			        	$list_of_logs_to_add = array_merge($list_of_logs_to_add, $filtered_list);
 			        }
 			    }
-
 			}
-    
 		}
-		
 	}
 
 	add_logs($list_of_logs_to_add);
@@ -230,8 +227,8 @@ function update_logs()
  */
 function filter_log(string $t): bool
 {
-    $f = ['trisk', 'effigy', 'battle', 'whip', 'dark', 'Forcae', 'dragon'];
-    return array_intersect($f, explode(' ', strtolower($t))) ? false : true;
+	$f = ['trisk', 'effigy', 'battle', 'whip', 'dark', 'Forcae', 'dragon'];
+	return array_intersect($f, explode(' ', strtolower($t))) ? false : true;
 }
 
 /*
@@ -240,24 +237,24 @@ function filter_log(string $t): bool
  */
 function match_logs(object $link, object $rm_log) : bool
 {   
-    return $link->lg_title == $rm_log->text && $link->lg_ts == $rm_log->timestamp ? true : false;
+	return $link->lg_title == $rm_log->text && $link->lg_ts == $rm_log->timestamp ? true : false;
 }
 
-function get_player_clan($player_name)
+function get_player_clan(string $player_name)
 {
-    $r = new \Ralph\api();
-    if (isset($r->get_details($player_name)->clan)) {
-    	return $r->get_details($player_name)->clan;
-    } else {
-    	return null;
-    }
+	$r = new \Ralph\api();
+	if (isset($r->get_details($player_name)->clan)) {
+		return $r->get_details($player_name)->clan;
+	} else {
+		return null;
+	}
 }
 
 /*
  *	Helpers
  */
 
-function norm($string)
+function norm(string $string) : string
 {
 	return str_replace(' ', '+', htmlentities(utf8_encode(strtolower($string))));
 }
@@ -271,10 +268,10 @@ function print_sitemap()
 	'<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
 
 	foreach ($urls as $url) {
-	    echo '<url>' . PHP_EOL;
-	    echo '<loc>'.$base_url.$url.'</loc>' . PHP_EOL;
-	    echo '<changefreq>daily</changefreq>' . PHP_EOL;
-	    echo '</url>' . PHP_EOL;
+		echo '<url>' . PHP_EOL;
+		echo '<loc>'.$base_url.$url.'</loc>' . PHP_EOL;
+		echo '<changefreq>daily</changefreq>' . PHP_EOL;
+		echo '</url>' . PHP_EOL;
 	}
 
 	echo '</urlset>' . PHP_EOL;
