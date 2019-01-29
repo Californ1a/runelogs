@@ -20,7 +20,7 @@ require __DIR__ .  '/ralph.php';
 
 function get_users() : array
 {
-	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
 	$sql = "SELECT * FROM users";
 	$result = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
 	$db = null;
@@ -29,7 +29,7 @@ function get_users() : array
 
 function get_user(int $user_id)
 {
-	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
 	$stmt = $db->prepare("SELECT * FROM users WHERE us_id = :user_id");
 	$stmt->bindParam(':user_id', $user_id);
 	$stmt->execute();
@@ -41,7 +41,7 @@ function get_user(int $user_id)
 
 function check_user(string $player_name) : bool
 {
-	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
 	$stmt = $db->prepare("SELECT * FROM users WHERE us_name = :player_name");
 	$stmt->bindParam(':player_name', $player_name);
 	$stmt->execute();
@@ -53,7 +53,7 @@ function check_user(string $player_name) : bool
 
 function add_user(string $player_name, string $player_clan) : int
 {
-	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
 	$stmt = $db->prepare("INSERT INTO users VALUES (null, :player_name, :player_clan)");
 	$stmt->bindParam(':player_name', $player_name);
 	$stmt->bindParam(':player_clan', $player_clan);
@@ -69,7 +69,7 @@ function get_player_logs(string $player_name, int $page) : array
 {
 	$limit = 20;
 	$offset = ($page - 1)  * $limit;
-	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
 	$stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_name = :player_name ORDER BY logs.lg_ts DESC LIMIT :limit OFFSET :offset");
 	$stmt->bindParam(':player_name', $player_name);
 	$stmt->bindParam(':limit', $limit);
@@ -83,7 +83,7 @@ function get_player_logs(string $player_name, int $page) : array
 
 function get_players_last_log(int $player_id)
 {
-	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
 	$stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_id = :player_id ORDER BY logs.lg_id DESC LIMIT 1");
 	$stmt->bindParam(':player_id', $player_id);
 	$stmt->execute();
@@ -99,7 +99,7 @@ function get_players_last_log(int $player_id)
 
 function search(string $player_name, string $search_term) : array
 {
-	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
 	$search_term = '%'.$search_term.'%'; //prep the search query here cus sqlite doesnt like it when u do this inline
 	$stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_name = :player_name AND (logs.lg_title LIKE :search_term OR logs.lg_details LIKE :search_term) ORDER BY logs.lg_ts DESC");
 	$stmt->bindParam(':player_name', $player_name);
@@ -113,7 +113,7 @@ function search(string $player_name, string $search_term) : array
 
 function add_logs(array $logs_to_add)
 {
-    $db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+    $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
     $db->beginTransaction();
     $stmt = $db->prepare("INSERT INTO logs VALUES (null, :user_id, :log_title, :log_details, :log_timestamp)");
     foreach ($logs_to_add as $log) {
@@ -129,7 +129,7 @@ function add_logs(array $logs_to_add)
 
 function get_statistics() : object
 {
-	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
+	$db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
 	$sql = "SELECT count(*) as user_count FROM users;";
 	$user_count = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 	$sql = "SELECT count(*) log_count FROM logs;";
@@ -265,7 +265,7 @@ function norm($string)
 function print_sitemap()
 {
 	$base_url = 'https://runelo.gs';
-	$urls = ["/","/about","/filter"];
+	$urls = ['/','/about','/filter'];
 
 	echo '<?xml version="1.0" encoding="utf-8"?>'.PHP_EOL.
 	'<urlset xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
