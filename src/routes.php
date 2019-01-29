@@ -33,6 +33,7 @@ $app->get('/about', function ($request, $response, $args) {
 
 $app->get('/test', function ($request, $response, $args) {
     //oof ouch owie my debug function
+    var_dump(get_players_last_log(71));
 });
 
 /*

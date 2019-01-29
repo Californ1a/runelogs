@@ -182,7 +182,7 @@ function update_logs()
                 if (!$player_last_log) { //no last log, save all
 
                     echo 'no link, saving all'."\r\n";
-                    $list_of_logs_to_add = array_merge($list_of_logs_to_add, $filtered_list);
+                    $list_of_logs_to_add = array_merge($list_of_logs_to_add, array_reverse($filtered_list));
 
                 } else {
 
@@ -209,7 +209,7 @@ function update_logs()
                     if ($last_log_found == false) {
 
                         echo 'link not found, saving all'."\r\n";
-                        $list_of_logs_to_add = array_merge($list_of_logs_to_add, $filtered_list);
+                        $list_of_logs_to_add = array_merge($list_of_logs_to_add, array_reverse($filtered_list));
                     }
                 }
             }
