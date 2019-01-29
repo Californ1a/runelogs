@@ -123,6 +123,7 @@ Class api
             'fulfilled' => function ($response, $index) use ($list, &$output)
             {
                 $output_object = (object)[];
+                $output_object->index = $index;
                 $output_object->id = $list[$index]->us_id;
                 $output_object->name = $list[$index]->us_name;
                 $output_object->clan = $list[$index]->us_clan;

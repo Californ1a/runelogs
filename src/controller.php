@@ -2,15 +2,23 @@
 date_default_timezone_set('UTC'); //fuck jagex and fuck php
 require __DIR__ .  '/ralph.php';
 
-/* DB stuff */
 /*
+ *	Runelo.gs controller
  *
- *	Note to self: if you get duplicates in your db because your code is garbage, flsuh em out with this query:
- *  	DELETE FROM logs WHERE rowid NOT IN (SELECT min(rowid) FROM logs GROUP BY logs.lg_ts, logs.lg_details);
+ *	Legend:
+ *		- DB functions (1 to 140)
+ *		- Log update (140 to 255)
+ *		- Helpers (255 to 280)
  *
+ *	Yes everything is in 1 controller, it's only 280 lines you doofus take ur oop mvc elsewhere
  */
 
-function get_users()
+/*
+ *	DB stuff
+ *  ? DELETE FROM logs WHERE rowid NOT IN (SELECT min(rowid) FROM logs GROUP BY logs.lg_ts, logs.lg_details);
+ */
+
+function get_users() : array
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
 	$sql = "SELECT * FROM users";
@@ -19,35 +27,31 @@ function get_users()
 	return $result;
 }
 
-function get_user($user_id)
+function get_user(int $user_id)
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
 	$stmt = $db->prepare("SELECT * FROM users WHERE us_id = :user_id");
 	$stmt->bindParam(':user_id', $user_id);
 	$stmt->execute();
 
-	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$result = $stmt->fetch(PDO::FETCH_OBJ);
 	$db = null;
-	return $result[0];
+	return $result;
 }
 
-function check_user($player_name)
+function check_user(string $player_name) : bool
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
 	$stmt = $db->prepare("SELECT * FROM users WHERE us_name = :player_name");
 	$stmt->bindParam(':player_name', $player_name);
 	$stmt->execute();
 
-	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$result = $stmt->fetch();
 	$db = null;
-	if(isset($result[0])){
-		return true;
-	}else{
-		return false;
-	}
+	return $result ? true : false; 
 }
 
-function add_user($player_name, $player_clan)
+function add_user(string $player_name, string $player_clan) : int
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
 	$stmt = $db->prepare("INSERT INTO users VALUES (null, :player_name, :player_clan)");
@@ -57,11 +61,11 @@ function add_user($player_name, $player_clan)
 	$stmt->execute();
 	$last_id = $db->lastInsertId();
 	$db = null;
-	return $last_id; //user id just created
+	return $last_id;
 }
 
 
-function get_player_logs($player_name, $page)
+function get_player_logs(string $player_name, int $page) : array
 {
 	$limit = 20;
 	$offset = ($page - 1)  * $limit;
@@ -72,46 +76,45 @@ function get_player_logs($player_name, $page)
 	$stmt->bindParam(':offset', $offset);
 	$stmt->execute();
 
-	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$result = $stmt->fetchAll(PDO::FETCH_OBJ);
 	$db = null;
 	return $result;
 }
 
-function get_players_last_log($player_id)
+function get_players_last_log(int $player_id)
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
 	$stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_id = :player_id ORDER BY logs.lg_id DESC LIMIT 1");
 	$stmt->bindParam(':player_id', $player_id);
 	$stmt->execute();
 
-	$result = $stmt->fetchAll(PDO::FETCH_OBJ);
+	$result = $stmt->fetch(PDO::FETCH_OBJ);
 	$db = null;
-	if(isset($result[0])){
-		return $result[0];
+	if($result){
+		return $result;
 	}else{
 		return false;
 	}
 }
 
-function search($player_name, $search_term)
+function search(string $player_name, string $search_term) : array
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
-	$search_term = '%'.$search_term.'%';
+	$search_term = '%'.$search_term.'%'; //prep the search query here cus sqlite doesnt like it when u do this inline
 	$stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_name = :player_name AND (logs.lg_title LIKE :search_term OR logs.lg_details LIKE :search_term) ORDER BY logs.lg_ts DESC");
 	$stmt->bindParam(':player_name', $player_name);
 	$stmt->bindParam(':search_term', $search_term);
 	$stmt->execute();
 
-	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	$result = $stmt->fetchAll(PDO::FETCH_OBJ);
 	$db = null;
 	return $result;
 }
 
-function add_logs($logs_to_add)
+function add_logs(array $logs_to_add)
 {
     $db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
     $db->beginTransaction();
-
     $stmt = $db->prepare("INSERT INTO logs VALUES (null, :user_id, :log_title, :log_details, :log_timestamp)");
     foreach ($logs_to_add as $log) {
         $stmt->bindParam(':user_id', $log->user_id);
@@ -120,99 +123,55 @@ function add_logs($logs_to_add)
 		$stmt->bindParam(':log_timestamp', $log->timestamp);
         $stmt->execute();
     }
-
     $db->commit();
     $db = null;
 }
 
-function get_statistics()
+function get_statistics() : object
 {
 	$db = new PDO("sqlite:".__DIR__ ."/../data/db.sqlite");
 	$sql = "SELECT count(*) as user_count FROM users;";
-	$result['user_count'] = $db->query($sql)->fetchAll(PDO::FETCH_OBJ)[0]->user_count;
+	$user_count = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
 	$sql = "SELECT count(*) log_count FROM logs;";
-	$result['log_count'] = $db->query($sql)->fetchAll(PDO::FETCH_OBJ)[0]->log_count;
+	$log_count = $db->query($sql)->fetch(PDO::FETCH_ASSOC);
+	$statistics = (object) array_merge($user_count, $log_count); //get off my back
 	$db = null;
-	return (object)$result;
+	return $statistics;
 }
 
-/* 
- * Run-eMetrics stuff
- *		the real big boi function
- *	will document 
+/*
+ *	Run-eMetrics section
  */
 
 function update_logs()
 {	
-	/*
-	 *	Declare a new instance of the Ralph API we use to fetch Runemetric data
-	 *
-	 */
-
 	$r = new \Ralph\api();
-
-	/*
-	 *	Fetch a list of all our users, and grab the Runemetrics profile for each user
-	 *
-	 */
-
 	$users = get_users();
 	$player_profiles = $r->get_bulk_profiles($users);
-
-	/*
-	 *	Prepare an empty array to hold all the logs we will add to the db (in one transaction)
-	 *
-	 */
-
 	$list_of_logs_to_add = [];
 
-	/*
-	 *	Start looping all of the Runemetric profiles
-	 *
-	 */
-
-	foreach($player_profiles as $player_profile){
+	foreach ($player_profiles as $player_profile) {
 		
 		echo '#'.$player_profile->id.' '.$player_profile->name.' | '; //debug output
 
-		/*
-		 *	Check for RM errors, possible ones are NO_PROFILE or PROFILE_PRIVATE
-		 *
-		 */
 		if (isset($player_profile->error)) {
-			//try looking for name changes
-
-			//get clan name from user record
-
-			//if no one is found, mark that player as broken
-			echo 'Profile error: '.$player_profile->error."\r\n";
+			
+			echo 'Profile error: '.$player_profile->error."\r\n"; //if no one is found, mark that player as broken
 
 		} else {
-			
-			$player_activities = $player_profile->activities; //the last 20 activites from the players' runemetrics object
 
-			/*
-			 *	Filter all player activities on keywords
-			 *
-			 */
-
+			//filter it
 			$filtered_list = [];
-
-			foreach ($player_activities as &$activity) {
+			foreach ($player_profile->activities as &$activity) {
 				$activity->user_id = intval($player_profile->id);
 				$activity->timestamp = strtotime($activity->date);
 				unset($activity->date);
-				if(filter_log($activity->text)){
+				if (filter_log($activity->text)) {
 					$filtered_list[] = $activity;
 				}
 			}
 
-			/*
-			 *	Proceed with the linking process
-			 *	During the linking process, we will use the last log found in the db (the link) to
-			 *
-			 */
-
+			//and continue with the filtered list
 			if (empty($filtered_list)) {
 
 				echo 'no new logs found'."\r\n";
@@ -248,11 +207,6 @@ function update_logs()
 			            }
 			        }
 
-			        /*
-					 *	Looped over all the logs and couldnt find the link -> add all new logs
-					 *
-					 */
-
 			        if ($last_log_found == false) {
 
 			        	echo 'link not found, saving all'."\r\n";
@@ -269,27 +223,24 @@ function update_logs()
 	add_logs($list_of_logs_to_add);
 }
 
-function filter_log($log_text)
+/*
+ *	Log filtration
+ *	$t is the log text, $f is the filter array
+ *	Explode the log text, then array intersect with the filter array, return bool
+ */
+function filter_log(string $t): bool
 {
-    $ignore = ['trisk', 'effigy', 'battle', 'whip', 'dark', 'Forcae', 'dragon'];
-    
-    $exploded = explode(' ', strtolower($log_text));
-    
-    if(!array_pintersect($ignore, $exploded))
-    {
-        return true;
-    }
-    
-    return false;
+    $f = ['trisk', 'effigy', 'battle', 'whip', 'dark', 'Forcae', 'dragon'];
+    return array_intersect($f, explode(' ', strtolower($t))) ? false : true;
 }
 
-function match_logs($db_log, $rm_log) //first one is from db, second one is from RM
+/*
+ *	Log matching
+ *	Compare our link (the last local log) and a newer log
+ */
+function match_logs(object $link, object $rm_log) : bool
 {   
-    if ($db_log->lg_title == $rm_log->text && $db_log->lg_ts == $rm_log->timestamp) {
-        return true;
-    } else {
-        return false;
-    }
+    return $link->lg_title == $rm_log->text && $link->lg_ts == $rm_log->timestamp ? true : false;
 }
 
 function get_player_clan($player_name)
@@ -302,25 +253,13 @@ function get_player_clan($player_name)
     }
 }
 
-/* Helpers */
+/*
+ *	Helpers
+ */
 
 function norm($string)
 {
 	return str_replace(' ', '+', htmlentities(utf8_encode(strtolower($string))));
-}
-
-function array_pintersect(array $needles, array $haystack)
-{
-    foreach ($haystack as $hay) {
-        foreach ($needles as $needle) {
-            $hay = strval($hay);
-            $pos = stripos($hay, $needle);
-            if ($pos !== false) {
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 function print_sitemap()
