@@ -18,23 +18,23 @@ use GuzzleHttp\Pool;
 use Psr\Http\Message\ResponseInterface;
 
 Class api
-        {
-    //	Default Guzzle client & base URIs
-	private $client = null;
+{
+    //  Default Guzzle client & base URIs
+    private $client = null;
     private $base_legacy_url = 'http://services.runescape.com/';
-	private $base_runemetrics_url = 'https://apps.runescape.com/runemetrics/';
-	private $skill_list = ["Overall", "Attack", "Defence", "Strength", "Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving", "Slayer", "Farming", "Runecrafting", "Hunter", "Construction", "Summoning", "Dungeoneering", "Divination", "Invention", "Bounty Hunter", "B.H. Rogues", "Dominion Tower", "The Crucible", "Castle Wars games", "B.A. Attackers", "B.A. Defenders", "B.A. Collectors", "B.A. Healers", "Duel Tournament", "Mobilising Armies", "Conquest", "Fist of Guthix", "GG: Athletics", "GG: Resource Race", "WE2: Armadyl Lifetime Contribution", "WE2: Bandos Lifetime Contribution", "WE2: Armadyl PvP kills", "WE2: Bandos PvP kills", "Heist Guard Level", "Heist Robber Level", "CFP: 5 game average", "AF15: Cow Tipping", "AF15: Rats killed after the miniquest"];
-	//	Debug output
-        	public $request_info = [];
+    private $base_runemetrics_url = 'https://apps.runescape.com/runemetrics/';
+    private $skill_list = ["Overall", "Attack", "Defence", "Strength", "Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting", "Smithing", "Mining", "Herblore", "Agility", "Thieving", "Slayer", "Farming", "Runecrafting", "Hunter", "Construction", "Summoning", "Dungeoneering", "Divination", "Invention", "Bounty Hunter", "B.H. Rogues", "Dominion Tower", "The Crucible", "Castle Wars games", "B.A. Attackers", "B.A. Defenders", "B.A. Collectors", "B.A. Healers", "Duel Tournament", "Mobilising Armies", "Conquest", "Fist of Guthix", "GG: Athletics", "GG: Resource Race", "WE2: Armadyl Lifetime Contribution", "WE2: Bandos Lifetime Contribution", "WE2: Armadyl PvP kills", "WE2: Bandos PvP kills", "Heist Guard Level", "Heist Robber Level", "CFP: 5 game average", "AF15: Cow Tipping", "AF15: Rats killed after the miniquest"];
+    //  Debug output
+    public $request_info = [];
 
-	/*
+    /*
      *  Constructor
      */
     
-	function __construct()
-	{
-		$this->client =  new Client(['http_errors' => false]);
-	}
+    function __construct()
+    {
+        $this->client =  new Client(['http_errors' => false]);
+    }
 
     /*
      *  base functions
@@ -53,47 +53,47 @@ Class api
     
     public function get_json(string $url, $trim_callback = false)
     {
-		//perform the request
-    	$response = $this->client->request('GET', $url);
+        //perform the request
+        $response = $this->client->request('GET', $url);
 
-		//check for a good HTTP code
-    	if ($response->getStatusCode() == 200) {
+        //check for a good HTTP code
+        if ($response->getStatusCode() == 200) {
 
-			//get the response content
-    		$body = $response->getBody()->getContents();
+            //get the response content
+            $body = $response->getBody()->getContents();
 
-		    //if this is a callback response, trim it
-    		if ($trim_callback == true) {
-    			$body = $this->trim_callback($body);
-    		}
+            //if this is a callback response, trim it
+            if ($trim_callback == true) {
+                $body = $this->trim_callback($body);
+            }
 
-		    //decode the content
-    		$content = json_decode($body);
+            //decode the content
+            $content = json_decode($body);
 
-		    //if there are errors, return them as a property of an object
-    		if (isset($content->error)) {
-    			return (object)["error" => $content->error];
-    		} else {
-    			return $content;
-    		}
-    	} else {
-    		return false;
-    	}
+            //if there are errors, return them as a property of an object
+            if (isset($content->error)) {
+                return (object)["error" => $content->error];
+            } else {
+                return $content;
+            }
+        } else {
+            return false;
+        }
     }
 
-	/*
+    /*
      *  Player functions
      */
 
-	/**
-	 * Get the Runemetrics profile data for a given player name
-	 * @param string $player_name
-	 * @return object
-	 */
-	public function get_profile($player_name)
-	{
-		return $this->get_json($this->base_runemetrics_url.'profile/profile?user='.$this->norm($player_name).'&activities=20');
-	}
+    /**
+     * Get the Runemetrics profile data for a given player name
+     * @param string $player_name
+     * @return object
+     */
+    public function get_profile($player_name)
+    {
+        return $this->get_json($this->base_runemetrics_url.'profile/profile?user='.$this->norm($player_name).'&activities=20');
+    }
 
     public function get_details($player_name)
     {
@@ -102,7 +102,7 @@ Class api
 
     public function get_avatar($player_name)
     {
-    	return $this->base_legacy_url.'m=avatar-rs/'.$this->norm($player_name).'/chat.png';
+        return $this->base_legacy_url.'m=avatar-rs/'.$this->norm($player_name).'/chat.png';
     }
 
     public function get_bulk_profiles(array $list) : array
@@ -178,14 +178,14 @@ Class api
         }
     }
 
-	/*
-	 *  Helper functions
-	 */
+    /*
+     *  Helper functions
+     */
 
-	public function norm(string $string) : string
-	{
-		return str_replace(' ', '+', htmlentities(utf8_encode(strtolower($string))));
-	}
+    public function norm(string $string) : string
+    {
+        return str_replace(' ', '+', htmlentities(utf8_encode(strtolower($string))));
+    }
 
     private function trim_callback($response_string)
     {

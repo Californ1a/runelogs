@@ -64,7 +64,6 @@ function add_user(string $player_name, string $player_clan) : int
     return $last_id;
 }
 
-
 function get_player_logs(string $player_name, int $page) : array
 {
     $limit = 20;
