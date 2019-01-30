@@ -17,7 +17,7 @@
                     <li class="log-item">
                         <div class="log-header">
                             <h2 class="log-title">{{ log.lg_title }}</h2>
-                            <span class="log-timestamp">{{ log.us_name|capitalize }} | {{ log.lg_ts|date }}</span>
+                            <span class="log-timestamp">{{ log.us_name|capitalize|replace({'+': ' '}) }} | {{ log.lg_ts|date }}</span>
                         </div>
                         <p class="log-details">{{ log.lg_details }}</p>
                     </li>
