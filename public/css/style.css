@@ -72,6 +72,21 @@ main {
 	max-width: 40rem;
 }
 
+.home {
+	flex-direction: row;
+}
+
+.home .text {
+	
+}
+
+.demo {
+	position: fixed;
+	top: -3rem;
+	margin-left: calc(50px + 40rem);
+	display: flex;
+}
+
 /* Search */
 
 .search {
@@ -201,6 +216,9 @@ main {
 	main {
 		margin-left: 0;
 		flex-direction: column;
+	}
+	.demo {
+		display: none;
 	}
 }
 

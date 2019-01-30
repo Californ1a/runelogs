@@ -138,6 +138,16 @@ function get_statistics() : object
     return $statistics;
 }
 
+function get_newest_logs()
+{
+    $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
+    $sql = "SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id ORDER BY logs.lg_ts DESC LIMIT 12;";
+    $result = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
+
+    $db = null;
+    return $result;
+}
+
 /*
  *  Run-eMetrics section
  */

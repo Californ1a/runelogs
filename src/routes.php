@@ -85,6 +85,8 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
 
     } else {
 
+        $args['latest'] = get_newest_logs();
+        
         if (!empty($_COOKIE['player'])) {   
             $args['player'] = $_COOKIE['player'];
         } else {
