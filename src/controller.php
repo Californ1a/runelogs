@@ -141,7 +141,7 @@ function get_statistics() : object
 function get_newest_logs()
 {
     $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
-    $sql = "SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id ORDER BY logs.lg_ts DESC LIMIT 12;";
+    $sql = "SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id GROUP BY users.us_name ORDER BY logs.lg_ts DESC LIMIT 15;";
     $result = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
 
     $db = null;
