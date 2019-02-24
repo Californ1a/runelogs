@@ -80,6 +80,18 @@ function get_player_logs(string $player_name, int $page) : array
     return $result;
 }
 
+function get_all_player_logs(string $player_name) : array
+{
+    $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
+    $stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_name = :player_name ORDER BY logs.lg_ts");
+    $stmt->bindParam(':player_name', $player_name);
+    $stmt->execute();
+
+    $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+    $db = null;
+    return $result;
+}
+
 function get_players_last_log(int $player_id)
 {
     $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
@@ -255,8 +267,43 @@ function get_player_clan(string $player_name)
     if (isset($r->get_details($player_name)->clan)) {
         return $r->get_details($player_name)->clan;
     } else {
-        return null;
+        return 'none';
     }
+}
+
+function generate_player_grid(array $player_logs)
+{
+    $logs_sorted_by_day = [];
+
+    foreach ($player_logs as $log) {   
+        $logs_sorted_by_day[date('z', $log->lg_ts)][] = $log;
+    }
+    ob_start();
+
+    for ($i=0; $i <= 365; $i++) {
+        if(isset($logs_sorted_by_day[$i])){
+            $logs_on_that_day = $logs_sorted_by_day[$i];
+
+            $quantity = count($logs_sorted_by_day[$i]);
+            if ($quantity <= 5) {
+                $activity = 'low';
+            } else if ($quantity <= 10) {
+                $activity = 'medium';
+            } else if ($quantity > 20) {
+                $activity = 'high';
+            }
+
+            $day = date('M j, Y', $logs_on_that_day[0]->lg_ts);
+
+            echo '<span class="grid-square '.$activity.'" data-balloon="'.$quantity.' logs on '.$day.'" data-balloon-pos="down" data-balloon-break></span>';
+
+        } else {
+            echo '<span class="grid-square"></span>';
+        }
+    }
+
+    $grid = ob_get_clean();
+    return $grid;
 }
 
 /*

@@ -63,6 +63,8 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
 
             $player_logs = get_player_logs($player_name, 1);
             if ($player_logs) {
+                $all_player_logs = get_all_player_logs($player_name);
+                $args['grid'] = generate_player_grid($all_player_logs);
                 $args['logs'] = $player_logs;
             } else {
                 $r = new \Ralph\api();

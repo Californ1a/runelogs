@@ -151,6 +151,67 @@ main {
     margin-left: .5rem;
 }
 
+/* Activty grid */
+
+.grid-container {
+    margin-left: 2rem;
+}
+
+.grid-container label {
+    font-size: 9px;
+}
+
+.grid-body {
+    display: flex;
+}
+
+.right-legend {
+    width: 1rem;
+    margin-right: .2rem;
+}
+
+.top-legend {
+    display: flex;
+    margin: 0 2rem .2rem 0;
+}
+
+.right-legend label, .top-legend label {
+    flex: 1;
+}
+
+.right-legend {
+    display: flex;
+    margin-left: .2rem;
+    flex-direction: column;
+}
+
+.grid {
+    display: flex;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    max-width: 98px;
+}
+
+.grid-square {
+    width: 10px;
+    height: 10px;
+    margin: 2px;
+    background-color: #d5d9df;
+}
+
+.low {
+    background-color: #c6e48b;
+}
+
+.medium {
+    background-color: #7bc96f;
+}
+
+.high {
+    background-color: #196127;
+}
+
+
 /* Nightmode */
 
 .night-mode-toggle {
@@ -196,6 +257,21 @@ main {
     color: #bdc3ce;
 }
 
+.is-nightmode .grid-square {
+    background-color: #1e272b;
+}
+
+.is-nightmode .low {
+    background-color: #fff6c5;
+}
+
+.is-nightmode .medium {
+    background-color: #ffd700;
+}
+
+.is-nightmode .high {
+    background-color: #ff9700;
+}
 
 /* Mobile */
 
@@ -218,6 +294,9 @@ main {
         flex-direction: column;
     }
     .demo {
+        display: none;
+    }
+    .grid-container {
         display: none;
     }
 }

@@ -51,7 +51,6 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <span class="loading-container"></span>
             {% else %}
                 <section class='text'>
                     <p>{{ message }}</p>
@@ -61,4 +60,37 @@
         {% endif %}
 
     </main>
+
+    {% if logs is defined and logs is not empty %}
+
+        <div class="grid-container">
+            <div class="top-legend">
+                <label>Mon</label>
+                <label>Wed</label>
+                <label>Fri</label>
+            </div>
+            <div class="grid-body">
+                
+                <div class="grid">
+                    {{ grid|raw }}
+                </div>
+                <div class="right-legend">
+                    <label>Jan</label>
+                    <label>Feb</label>
+                    <label>Mar</label>
+                    <label>Apr</label>
+                    <label>May</label>
+                    <label>Jun</label>
+                    <label>Jul</label>
+                    <label>Aug</label>
+                    <label>Sep</label>
+                    <label>Oct</label>
+                    <label>Nov</label>
+                    <label>Dec</label>
+                </div>
+            </div>     
+        </div>
+
+    {% endif %}
+    
 {% include '/common/footer.twig' %}
