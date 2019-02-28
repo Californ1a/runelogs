@@ -289,8 +289,10 @@ function generate_player_grid(array $player_logs)
                 $activity = 'low';
             } else if ($quantity <= 10) {
                 $activity = 'medium';
-            } else if ($quantity > 20) {
+            } else if ($quantity <= 20) {
                 $activity = 'high';
+            } else if ($quantity > 20) {
+                $activity = 'sweat';
             }
 
             $day = date('M j, Y', $logs_on_that_day[0]->lg_ts);

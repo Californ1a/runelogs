@@ -200,15 +200,19 @@ main {
 }
 
 .low {
-    background-color: #c6e48b;
+    background-color: hsl(80.2,62.2%,80%);
 }
 
 .medium {
-    background-color: #7bc96f;
+    background-color: hsl(80.2,62.2%,60%);
 }
 
 .high {
-    background-color: #196127;
+    background-color: hsl(80.2,62.2%,40%);
+}
+
+.sweat {
+    background-color: hsl(80.2,62.2%,20%);
 }
 
 
@@ -262,15 +266,19 @@ main {
 }
 
 .is-nightmode .low {
-    background-color: #fff6c5;
+    background-color: hsl(50.1,100%,80%)
 }
 
 .is-nightmode .medium {
-    background-color: #ffd700;
+    background-color: hsl(50.1,100%,60%)
 }
 
 .is-nightmode .high {
-    background-color: #ff9700;
+    background-color: hsl(50.1,100%,40%)
+}
+
+.is-nightmode .sweat {
+    background-color: hsl(50.1,100%,20%)
 }
 
 /* Mobile */

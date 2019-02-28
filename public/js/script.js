@@ -72,7 +72,6 @@ document.addEventListener('scroll', function() {
 
   if (!pollingForData && distToBottom > 0 && distToBottom <= 200) {
     pollingForData = true;
-    loadingContainer.classList.add('no-content');
 
     page++;
     xhr.open('GET', 'https://runelo.gs/load/'+player_name+'/'+page, true);
