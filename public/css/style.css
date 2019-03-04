@@ -197,6 +197,7 @@ main {
     height: 10px;
     margin: 2px;
     background-color: #d5d9df;
+    cursor: pointer;
 }
 
 .low {
@@ -215,6 +216,35 @@ main {
     background-color: hsl(80.2,62.2%,20%);
 }
 
+.today {
+    background-color: #2882b9;
+}
+
+
+/* Nightmode */
+
+.notification {
+    margin: 1rem 0 1rem 0;
+    background-color: #2ecc71;
+    padding: 20px;
+    color: #fff;
+}
+
+.notification p {
+    margin: 0;
+}
+
+.suc {
+    background-color: #2ecc71;
+}
+
+.err {
+    background-color: #e74c3c;
+}
+
+.inf {
+    background-color: #2882b9;
+}
 
 /* Nightmode */
 
@@ -281,6 +311,10 @@ main {
     background-color: hsl(50.1,100%,20%)
 }
 
+.is-nightmode .today {
+    background-color: #2882b9;
+}
+
 /* Mobile */
 
 @media screen and (max-width: 30rem) {
@@ -310,7 +344,7 @@ main {
 }
 
 @media screen and (min-width: 50rem) {
-    .logs, .results {
+    .text, .logs, .results {
         width: 40rem;
     }
 }

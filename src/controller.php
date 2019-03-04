@@ -64,15 +64,27 @@ function add_user(string $player_name, string $player_clan) : int
     return $last_id;
 }
 
-function get_player_logs(string $player_name, int $page) : array
+function get_player_id(string $player_name) : int
 {
-    $limit = 20;
-    $offset = ($page - 1)  * $limit;
     $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
-    $stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_name = :player_name ORDER BY logs.lg_ts DESC LIMIT :limit OFFSET :offset");
+    $stmt = $db->prepare("SELECT us_id FROM users WHERE us_name = :player_name");
     $stmt->bindParam(':player_name', $player_name);
-    $stmt->bindParam(':limit', $limit);
-    $stmt->bindParam(':offset', $offset);
+    $stmt->execute();
+
+    $result = intval($stmt->fetchColumn());
+    $db = null;
+    return $result;
+}
+
+function get_player_logs_by_date(int $player_id, int $date) : array
+{
+    $start = strtotime("midnight", $date);
+    $end = strtotime("tomorrow", $start) - 1;
+    $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
+    $stmt = $db->prepare("SELECT * FROM logs WHERE lg_us_id = :player_id AND (lg_ts >= :start AND lg_ts <= :end) ORDER BY lg_ts DESC");
+    $stmt->bindParam(':player_id', $player_id);
+    $stmt->bindParam(':start', $start);
+    $stmt->bindParam(':end', $end);
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -80,11 +92,11 @@ function get_player_logs(string $player_name, int $page) : array
     return $result;
 }
 
-function get_all_player_logs(string $player_name) : array
+function get_all_player_logs(int $player_id) : array
 {
     $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
-    $stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_name = :player_name ORDER BY logs.lg_ts");
-    $stmt->bindParam(':player_name', $player_name);
+    $stmt = $db->prepare("SELECT * FROM logs WHERE lg_us_id = :player_id ORDER BY lg_ts");
+    $stmt->bindParam(':player_id', $player_id);
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -95,7 +107,7 @@ function get_all_player_logs(string $player_name) : array
 function get_players_last_log(int $player_id)
 {
     $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
-    $stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_id = :player_id ORDER BY logs.lg_id DESC LIMIT 1");
+    $stmt = $db->prepare("SELECT * FROM logs WHERE lg_us_id = :player_id ORDER BY logs.lg_id DESC LIMIT 1");
     $stmt->bindParam(':player_id', $player_id);
     $stmt->execute();
 
@@ -108,12 +120,12 @@ function get_players_last_log(int $player_id)
     }
 }
 
-function search(string $player_name, string $search_term) : array
+function search(int $player_id, string $search_term) : array
 {
     $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
     $search_term = '%'.$search_term.'%'; //prep the search query here cus sqlite doesnt like it when u do this inline
-    $stmt = $db->prepare("SELECT * FROM logs INNER JOIN users ON users.us_id = logs.lg_us_id WHERE users.us_name = :player_name AND (logs.lg_title LIKE :search_term OR logs.lg_details LIKE :search_term) ORDER BY logs.lg_ts DESC");
-    $stmt->bindParam(':player_name', $player_name);
+    $stmt = $db->prepare("SELECT * FROM logs WHERE users.us_id = :player_id AND (logs.lg_title LIKE :search_term OR logs.lg_details LIKE :search_term) ORDER BY logs.lg_ts DESC");
+    $stmt->bindParam(':player_id', $player_id);
     $stmt->bindParam(':search_term', $search_term);
     $stmt->execute();
 
@@ -281,6 +293,10 @@ function generate_player_grid(array $player_logs)
     ob_start();
 
     for ($i=0; $i <= 365; $i++) {
+
+        $dayint = date('z', time());
+        $today_class = ($dayint == $i) ? 'today' : '';
+
         if(isset($logs_sorted_by_day[$i])){
             $logs_on_that_day = $logs_sorted_by_day[$i];
 
@@ -294,13 +310,14 @@ function generate_player_grid(array $player_logs)
             } else if ($quantity > 20) {
                 $activity = 'sweat';
             }
+            
+            $day_timestamp = $logs_on_that_day[0]->lg_ts;
+            $day = date('M j, Y', $day_timestamp);
 
-            $day = date('M j, Y', $logs_on_that_day[0]->lg_ts);
-
-            echo '<span class="grid-square '.$activity.'" data-balloon="'.$quantity.' logs on '.$day.'" data-balloon-pos="down" data-balloon-break></span>';
+            echo '<span class="grid-square '.$activity .' '. $today_class . '" data-date="'.$day_timestamp.'" data-balloon="'.$quantity.' logs on '.$day.'" data-balloon-pos="down"></span>';
 
         } else {
-            echo '<span class="grid-square"></span>';
+            echo '<span class="grid-square '. $today_class . '"></span>';
         }
     }
 
@@ -314,7 +331,8 @@ function generate_player_grid(array $player_logs)
 
 function norm(string $string) : string
 {
-    return str_replace(' ', '+', htmlentities(utf8_encode(strtolower($string))));
+    $to_replace = [" ", "_"];
+    return str_replace($to_replace, '+', htmlentities(utf8_encode(strtolower($string))));
 }
 
 function print_sitemap()

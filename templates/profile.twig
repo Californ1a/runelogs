@@ -24,44 +24,45 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <section class='text'>
+                <section class='text notification'>
                     <p>No results</p>
                 </section>
             {% endif %}
 
         {% else %}
+  
+            <header class='search'>
+                <form action="/{{ player }}" method="post">
+                    <input type="text" name="search" aria-label="search" placeholder="Search on.." />
+                    <input type="submit" aria-label="search-submit" value="" />
+                </form>
+            </header>
 
-            {% if logs is defined and logs is not empty %}
+            {% if message is defined %}
 
-                <header class='search'>
-                    <form action="/{{ player }}" method="post">
-                        <input type="text" name="search" aria-label="search" placeholder="Filter on.." />
-                        <input type="submit" aria-label="search-submit" value="" />
-                    </form>
-                </header>
-
-                <ul class="logs">
-                    {% for log in logs %}
-                        <li class="log-item">
-                            <div class="log-header">
-                                <h2 class="log-title">{{ log.lg_title }}</h2>
-                                <span class="log-timestamp">{{ log.lg_ts|date }}</span>
-                            </div>
-                            <p class="log-details">{{ log.lg_details }}</p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <section class='text'>
+                <section class='text notification {{ type }}'>
                     <p>{{ message }}</p>
                 </section>
+
             {% endif %}
+
+            <ul class="logs">
+                {% for log in logs %}
+                    <li class="log-item">
+                        <div class="log-header">
+                            <h2 class="log-title">{{ log.lg_title }}</h2>
+                            <span class="log-timestamp">{{ log.lg_ts|date }}</span>
+                        </div>
+                        <p class="log-details">{{ log.lg_details }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
 
         {% endif %}
 
     </main>
 
-    {% if logs is defined and logs is not empty %}
+    {% if search is not defined and grid is not empty %}
 
         <div class="grid-container">
             <div class="top-legend">
