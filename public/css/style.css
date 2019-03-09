@@ -59,6 +59,11 @@ code {
     flex: 1;
     display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+.logo-container a {
+    max-height: 1.75rem;
 }
 
 .header img {
@@ -409,7 +414,7 @@ main {
     }
 }
 
-@media screen and (max-width: 25rem) {
+@media screen and (max-width: 30rem) {
 
     .prefix {
         display: none;
