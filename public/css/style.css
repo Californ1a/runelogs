@@ -36,10 +36,8 @@ ul {
 }
 
 code {
-    display: block;
     background-color: #333;
     color: #eee;
-    margin-bottom: 1rem;
     padding: 1rem;
 }
 
@@ -69,22 +67,33 @@ main {
 }
 
 .text {
-    max-width: 40rem;
+    width: 30rem;
 }
 
 .home {
     flex-direction: row;
 }
 
-.demo {
-    position: fixed;
-    top: -3rem;
-    margin-left: calc(50px + 40rem);
+/* Home input */
+
+.prefix {
+    
+}
+
+.home-form {
+    margin-bottom: 1rem;
     display: flex;
-    -webkit-animation: scroll 600s infinite; /* Safari 4+ */
-    -moz-animation:    scroll 600s infinite; /* Fx 5+ */
-    -o-animation:      scroll 600s infinite; /* Opera 12+ */
-    animation:         scroll 600s infinite; /* IE 10+, Fx 29+ */
+}
+
+.home-input, .home-input-submit {
+    background-color: #333;
+    color: #eee;
+    padding: 1rem;
+    border: none;
+    border-radius: 0;
+}
+.home-input {
+    flex: 1;
 }
 
 /* Search */
@@ -115,7 +124,7 @@ main {
 .logs, .results {
     list-style: none;
     margin-left: 0;
-    max-width: 40rem;
+    width: 30rem;
 }
 
 .log-item {
@@ -202,10 +211,6 @@ main {
     cursor: pointer;
 }
 
-.mobile {
-    display: none;
-}
-
 .low {
     background-color: hsl(80.2,62.2%,80%);
 }
@@ -226,6 +231,10 @@ main {
     background-color: #2882b9;
 }
 
+.mobile {
+    display: none;
+}
+
 .mobile .grid {
     flex-direction: column;
     max-width: 100%;
@@ -238,10 +247,10 @@ main {
 }
 
 .mobile .top-legend {
-    width: 1700px;
+    width: 1200px;
 }
 
-/* Nightmode */
+/* Notifications */
 
 .notification {
     background-color: #2ecc71;
@@ -294,11 +303,17 @@ main {
 }
 
 .is-nightmode code {
-    display: block;
     background-color: #1e272b;
     color: #bdc3ce;
-    margin-bottom: 1rem;
     padding: 1rem;
+}
+
+.is-nightmode .home-input, .is-nightmode .home-input-submit {
+    background-color: #1e272b;
+    color: #bdc3ce;
+    padding: 1rem;
+    border: none;
+    border-radius: 0;
 }
 
 .is-nightmode .log-item {
@@ -345,7 +360,7 @@ main {
 
 /* Mobile */
 
-@media screen and (max-width: 35rem) {
+@media screen and (max-width: 45rem) {
     body {
         flex-direction: column;
         padding: 1.5rem;
@@ -363,6 +378,9 @@ main {
         margin-left: 0;
         flex-direction: column;
     }
+    .home {
+        flex-direction: column;
+    }
     .demo {
         display: none;
     }
@@ -378,6 +396,16 @@ main {
         overflow-x: auto;
         overflow-y: hidden;
     }
+    .text, .logs, .results {
+        width: auto;
+    }
+}
+
+@media screen and (max-width: 25rem) {
+
+    .prefix {
+        display: none;
+    }
 }
 
 @media screen and (min-width: 60rem) {
@@ -386,7 +414,18 @@ main {
     }
 }
 
-/* Animations? */
+/* Home demo animations */
+
+.demo {
+    position: fixed;
+    top: -3rem;
+    margin-left: calc(50px + 40rem);
+    display: flex;
+    -webkit-animation: scroll 600s infinite; /* Safari 4+ */
+    -moz-animation:    scroll 600s infinite; /* Fx 5+ */
+    -o-animation:      scroll 600s infinite; /* Opera 12+ */
+    animation:         scroll 600s infinite; /* IE 10+, Fx 29+ */
+}
 
 @-webkit-keyframes scroll {
     0%   { top: 0; }

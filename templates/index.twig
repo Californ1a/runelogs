@@ -3,10 +3,9 @@
         
         <section class='text'>
             <p>Runelogs is a basic archive site where Runescape players can keep a permanent history of their account activity.</p>
-            <p>We save all of your Adventure Log events and make it simple to search them by date or keyword.</p>
-            <p>Get started by visiting your personal page. Enter your player name in the URL after a forward slash, like so:</p>
-            <a class="profile-link" href="https://runelo.gs/{{ player }}"><code>https://runelo.gs/{{ player }}</code></a>
-            <p>If your name contains spaces, use a + sign to replace them.</p>
+            <p>We save all of your events and make it simple to search them by date or keyword.</p>
+            <p>To get started, enter a player name:</p>
+            <form action="/" method="post" class='home-form'><code class="prefix">https://runelo.gs/</code><input type="text" class="home-input" name="player" value="{{ (player is defined ) ? player : '' }}" /><input type="submit" class="home-input-submit" value="»"/></form>
             <p>More information can be found on our <a href="/about">about</a> page.</p>
         </section>
 

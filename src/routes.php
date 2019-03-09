@@ -103,12 +103,19 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
 
     } else {
 
+        if ($request->isPost()) {
+            $post = (object)$request->getParams();
+            var_dump($post);
+            if (isset($post->player)) {
+                $player_name = norm($post->player);
+                return $response->withRedirect('/'.$player_name);
+            }
+        }
+
         $args['latest'] = get_newest_logs();
         
         if (!empty($_COOKIE['player'])) {   
             $args['player'] = $_COOKIE['player'];
-        } else {
-            $args['player'] = 'beefiron';
         }
 
         return $this->view->fetch('index.twig', $args);

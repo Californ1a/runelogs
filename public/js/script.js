@@ -126,8 +126,13 @@ function load_date(date){
   }
 }
 
-var mobile_grid = document.querySelector('.grid-container');
-var today = document.querySelector('.today');
-var today_index = Array.from(today.parentNode.children).indexOf(today);
-let column = Math.ceil(today_index / 7);
-mobile_grid.scrollLeft = (column * 22) - (mobile_grid.offsetWidth / 2 );
+if (window.innerWidth < 500) {
+  var mobile_grid = document.querySelector('.grid-container');
+  var today = document.querySelector('.today');
+  var today_index = Array.from(today.parentNode.children).indexOf(today);
+  let column = Math.ceil(today_index / 7);
+  mobile_grid.scrollLeft = (column * 22) - (mobile_grid.offsetWidth / 2 );
+}
+
+var home_input = document.querySelector('.home-input');
+home_input.focus();
