@@ -24,8 +24,9 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <section class='text notification'>
-                    <p>No results</p>
+                <section class='text notification inf'>
+                    <h2>Nothing interesting found.</h2>
+                    <p>We couldn't find any results for that keyword.</p>
                 </section>
             {% endif %}
 
@@ -37,6 +38,41 @@
                     <input type="submit" aria-label="search-submit" value="" />
                 </form>
             </header>
+
+            {% if grid is not empty %}
+
+                <div class="grid-container">
+
+                    <div class="mobile">
+
+                        <div class="top-legend">
+                            <label>Jan</label>
+                            <label>Feb</label>
+                            <label>Mar</label>
+                            <label>Apr</label>
+                            <label>May</label>
+                            <label>Jun</label>
+                            <label>Jul</label>
+                            <label>Aug</label>
+                            <label>Sep</label>
+                            <label>Oct</label>
+                            <label>Nov</label>
+                            <label>Dec</label>
+
+                        </div>
+                        <div class="grid-body">
+
+                            <div class="grid">
+                                {{ grid|raw }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
 
             {% if message is defined %}
 
@@ -62,34 +98,43 @@
 
     </main>
 
-    {% if search is not defined and grid is not empty %}
+    {% if grid is not empty %}
 
         <div class="grid-container">
-            <div class="top-legend">
-                <label>Mon</label>
-                <label>Wed</label>
-                <label>Fri</label>
+
+            <div class="regular">
+
+                <div class="top-legend">
+                    <label>Mon</label>
+                    <label>Wed</label>
+                    <label>Fri</label>
+                </div>
+
+                <div class="grid-body">
+                    
+                    <div class="grid">
+                        {{ grid|raw }}
+                    </div>
+
+                    <div class="right-legend">
+                        <label>Jan</label>
+                        <label>Feb</label>
+                        <label>Mar</label>
+                        <label>Apr</label>
+                        <label>May</label>
+                        <label>Jun</label>
+                        <label>Jul</label>
+                        <label>Aug</label>
+                        <label>Sep</label>
+                        <label>Oct</label>
+                        <label>Nov</label>
+                        <label>Dec</label>
+                    </div>
+
+                </div>
+
             </div>
-            <div class="grid-body">
-                
-                <div class="grid">
-                    {{ grid|raw }}
-                </div>
-                <div class="right-legend">
-                    <label>Jan</label>
-                    <label>Feb</label>
-                    <label>Mar</label>
-                    <label>Apr</label>
-                    <label>May</label>
-                    <label>Jun</label>
-                    <label>Jul</label>
-                    <label>Aug</label>
-                    <label>Sep</label>
-                    <label>Oct</label>
-                    <label>Nov</label>
-                    <label>Dec</label>
-                </div>
-            </div>     
+
         </div>
 
     {% endif %}

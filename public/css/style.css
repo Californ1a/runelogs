@@ -91,7 +91,7 @@ main {
 
 .search {
     height: 1rem;
-    margin-bottom: .5rem;
+    margin-bottom: 1rem;
 }
 
 .search form {
@@ -165,24 +165,26 @@ main {
     display: flex;
 }
 
-.right-legend {
-    width: 1rem;
-    margin-right: .2rem;
-}
-
 .top-legend {
     display: flex;
     margin: 0 2rem .2rem 0;
 }
 
-.right-legend label, .top-legend label {
+.right-legend label, .left-legend label, .top-legend label {
     flex: 1;
 }
 
 .right-legend {
+    width: 1rem;
     display: flex;
     margin-left: .2rem;
     flex-direction: column;
+}
+
+.left-legend {
+    display: flex;
+    flex-direction: column;
+    margin-right: .2rem;
 }
 
 .grid {
@@ -198,6 +200,10 @@ main {
     margin: 2px;
     background-color: #d5d9df;
     cursor: pointer;
+}
+
+.mobile {
+    display: none;
 }
 
 .low {
@@ -220,18 +226,40 @@ main {
     background-color: #2882b9;
 }
 
+.mobile .grid {
+    flex-direction: column;
+    max-width: 100%;
+    height: 170px;
+}
+
+.mobile .grid-square {
+    width: 20px;
+    height: 20px;
+}
+
+.mobile .top-legend {
+    width: 1700px;
+}
 
 /* Nightmode */
 
 .notification {
-    margin: 1rem 0 1rem 0;
     background-color: #2ecc71;
-    padding: 20px;
+    padding: 1rem;
     color: #fff;
+}
+
+.notification h2 {
+    margin-bottom: .5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0;
 }
 
 .notification p {
     margin: 0;
+    font-size: .875rem;
 }
 
 .suc {
@@ -317,7 +345,7 @@ main {
 
 /* Mobile */
 
-@media screen and (max-width: 30rem) {
+@media screen and (max-width: 35rem) {
     body {
         flex-direction: column;
         padding: 1.5rem;
@@ -338,12 +366,21 @@ main {
     .demo {
         display: none;
     }
-    .grid-container {
+    .regular {
         display: none;
+    }
+    .mobile {
+        display: block;
+    }
+    .grid-container {
+        margin-left: 0;
+        margin-bottom: 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
     }
 }
 
-@media screen and (min-width: 50rem) {
+@media screen and (min-width: 60rem) {
     .text, .logs, .results {
         width: 40rem;
     }

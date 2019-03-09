@@ -75,7 +75,7 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
                 } else {
                     //set message = no logs for that day
                     $args['type'] = "inf";
-                    $args['message'] = "We couldn't find any logs for this day. Get cracking!";
+                    $args['message'] = "Looks like you don't have any logs for today.";
                 }
             }
 
@@ -108,7 +108,7 @@ $app->map(['GET','POST'], '/[{player}]', function ($request, $response, $args) {
         if (!empty($_COOKIE['player'])) {   
             $args['player'] = $_COOKIE['player'];
         } else {
-            $args['player'] = 'danie';
+            $args['player'] = 'beefiron';
         }
 
         return $this->view->fetch('index.twig', $args);

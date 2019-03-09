@@ -49,9 +49,13 @@ function display_logs(logs){
     var notification = document.createElement('section');
     notification.classList.add('text', 'notification', 'inf');
 
-    var notificationText = document.createElement('p');
-    notificationText.appendChild(document.createTextNode("We couldn't find any logs for this day."));
+    var notificationTitle = document.createElement('h2');
+    notificationTitle.appendChild(document.createTextNode("Nothing interesting happened."));
 
+    var notificationText = document.createElement('p');
+    notificationText.appendChild(document.createTextNode("Looks like you don't have any logs for this day."));
+
+    notification.appendChild(notificationTitle);
     notification.appendChild(notificationText);
 
     main.insertBefore(notification, log_container);
@@ -121,3 +125,9 @@ function load_date(date){
     }
   }
 }
+
+var mobile_grid = document.querySelector('.grid-container');
+var today = document.querySelector('.today');
+var today_index = Array.from(today.parentNode.children).indexOf(today);
+let column = Math.ceil(today_index / 7);
+mobile_grid.scrollLeft = (column * 22) - (mobile_grid.offsetWidth / 2 );

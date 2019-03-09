@@ -124,7 +124,7 @@ function search(int $player_id, string $search_term) : array
 {
     $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
     $search_term = '%'.$search_term.'%'; //prep the search query here cus sqlite doesnt like it when u do this inline
-    $stmt = $db->prepare("SELECT * FROM logs WHERE users.us_id = :player_id AND (logs.lg_title LIKE :search_term OR logs.lg_details LIKE :search_term) ORDER BY logs.lg_ts DESC");
+    $stmt = $db->prepare("SELECT * FROM logs WHERE lg_us_id = :player_id AND (lg_title LIKE :search_term OR lg_details LIKE :search_term) ORDER BY lg_ts DESC");
     $stmt->bindParam(':player_id', $player_id);
     $stmt->bindParam(':search_term', $search_term);
     $stmt->execute();
