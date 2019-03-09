@@ -2,7 +2,8 @@
     <main class='home'>
         
         <section class='text'>
-            <p>Runelogs is a basic archive site where Runescape players can keep a permanent history of their account activity.</p>
+            <h1>Never miss a {{ headliners[random(headliners | keys)] }}.</h1>
+            <p>Runelogs is a free, easy-to-use archive site where Runescape players can keep a permanent history of their account activity.</p>
             <p>We save all of your events and make it simple to search them by date or keyword.</p>
             <p>To get started, enter a player name:</p>
             <form action="/" method="post" class='home-form'><code class="prefix">https://runelo.gs/</code><input type="text" class="home-input" name="player" value="{{ (player is defined ) ? player : '' }}" /><input type="submit" class="home-input-submit" value="»"/></form>
@@ -11,6 +12,9 @@
 
         {% if latest is defined and latest is not empty %}
 
+        <section class='text'>
+
+        </section>
         <aside class='demo'>
             <ul class="logs">
                 {% for log in latest %}

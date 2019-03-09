@@ -2,13 +2,6 @@
     <main>
         
         {% if search is defined %}
-
-            <header class='search'>
-                <form action="/{{ player }}" method="post">
-                    <input type="text" name="search" aria-label="search" value="{{ search }}" />
-                    <input type="submit" aria-label="search-submit" value="" />
-                </form>
-            </header>
                 
             {% if results is not empty %}
 
@@ -31,17 +24,43 @@
             {% endif %}
 
         {% else %}
-  
-            <header class='search'>
-                <form action="/{{ player }}" method="post">
-                    <input type="text" name="search" aria-label="search" placeholder="Search on.." />
-                    <input type="submit" aria-label="search-submit" value="" />
-                </form>
-            </header>
 
             {% if grid is not empty %}
 
-                <div class="grid-container">
+                <aside class="grid-container">
+
+                    <div class="regular">
+
+                        <div class="top-legend">
+                            <label>Mon</label>
+                            <label>Wed</label>
+                            <label>Fri</label>
+                        </div>
+
+                        <div class="grid-body">
+                            
+                            <div class="left-legend">
+                                <label>Jan</label>
+                                <label>Feb</label>
+                                <label>Mar</label>
+                                <label>Apr</label>
+                                <label>May</label>
+                                <label>Jun</label>
+                                <label>Jul</label>
+                                <label>Aug</label>
+                                <label>Sep</label>
+                                <label>Oct</label>
+                                <label>Nov</label>
+                                <label>Dec</label>
+                            </div>
+
+                            <div class="grid">
+                                {{ grid|raw }}
+                            </div>
+
+                        </div>
+
+                    </div>
 
                     <div class="mobile">
 
@@ -70,73 +89,36 @@
 
                     </div>
 
-                </div>
+                </aside>
 
             {% endif %}
 
-            {% if message is defined %}
+            <section class="content">
 
-                <section class='text notification {{ type }}'>
-                    <p>{{ message }}</p>
-                </section>
+                {% if message is defined %}
 
-            {% endif %}
+                    <div class='text notification {{ type }}'>
+                        <p>{{ message }}</p>
+                    </div>
 
-            <ul class="logs">
-                {% for log in logs %}
-                    <li class="log-item">
-                        <div class="log-header">
-                            <h2 class="log-title">{{ log.lg_title }}</h2>
-                            <span class="log-timestamp">{{ log.lg_ts|date }}</span>
-                        </div>
-                        <p class="log-details">{{ log.lg_details }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
+                {% endif %}
+
+                <ul class="logs">
+                    {% for log in logs %}
+                        <li class="log-item">
+                            <div class="log-header">
+                                <h2 class="log-title">{{ log.lg_title }}</h2>
+                                <span class="log-timestamp">{{ log.lg_ts|date }}</span>
+                            </div>
+                            <p class="log-details">{{ log.lg_details }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            </section>
 
         {% endif %}
 
     </main>
-
-    {% if grid is not empty %}
-
-        <div class="grid-container">
-
-            <div class="regular">
-
-                <div class="top-legend">
-                    <label>Mon</label>
-                    <label>Wed</label>
-                    <label>Fri</label>
-                </div>
-
-                <div class="grid-body">
-                    
-                    <div class="grid">
-                        {{ grid|raw }}
-                    </div>
-
-                    <div class="right-legend">
-                        <label>Jan</label>
-                        <label>Feb</label>
-                        <label>Mar</label>
-                        <label>Apr</label>
-                        <label>May</label>
-                        <label>Jun</label>
-                        <label>Jul</label>
-                        <label>Aug</label>
-                        <label>Sep</label>
-                        <label>Oct</label>
-                        <label>Nov</label>
-                        <label>Dec</label>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    {% endif %}
     
 {% include '/common/footer.twig' %}

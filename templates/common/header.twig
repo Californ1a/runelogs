@@ -21,6 +21,20 @@
 </head>
 <body>
 	<header class="header">
-		<a href="/"><img src="/img/icon.png" alt="The Runelogs logo"/></a>
-    <a class="night-mode-toggle" href="" title="Toggle between night and day mode"></a>
+    
+    <section class='search'>
+      {% if player is defined %}
+      <form action="/{{ player }}" method="post">
+          <input type="text" name="search" aria-label="search" placeholder="Search..." value="{{ (search is defined) ? search : '' }}" />
+          <input type="submit" aria-label="search-submit" value="" />
+      </form>
+      {% endif %}
+    </section>
+  
+		<div class="logo-container">
+      <a href="/"><img src="/img/icon.png" alt="The Runelogs logo"/></a>
+    </div>
+    <div class="toggle-container">
+      <a class="night-mode-toggle" href="" title="Toggle between night and day mode"></a>
+    </div>
 	</header>

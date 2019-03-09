@@ -1,6 +1,6 @@
 var data, dataObj;
 var xhr = new XMLHttpRequest();
-var main = document.querySelector('main');
+var content = document.querySelector('.content');
 var log_container = document.getElementsByClassName('logs')[0];
 
 let rsn = window.location.href.split("/")[3];
@@ -58,7 +58,7 @@ function display_logs(logs){
     notification.appendChild(notificationTitle);
     notification.appendChild(notificationText);
 
-    main.insertBefore(notification, log_container);
+    content.insertBefore(notification, log_container);
   }
   
 };
@@ -126,6 +126,11 @@ function load_date(date){
   }
 }
 
+var home_input = document.querySelector('.home-input');
+if(home_input){
+  home_input.focus();
+}
+
 if (window.innerWidth < 500) {
   var mobile_grid = document.querySelector('.grid-container');
   var today = document.querySelector('.today');
@@ -133,6 +138,3 @@ if (window.innerWidth < 500) {
   let column = Math.ceil(today_index / 7);
   mobile_grid.scrollLeft = (column * 22) - (mobile_grid.offsetWidth / 2 );
 }
-
-var home_input = document.querySelector('.home-input');
-home_input.focus();

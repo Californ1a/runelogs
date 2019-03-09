@@ -12,8 +12,6 @@ body {
     background-color: #efefef;
     color: #333;
     font-size: 100%;
-    padding: 2rem;
-    display: flex;
 }
 
 /* Basics */
@@ -48,33 +46,47 @@ code {
 /* Layout */
 
 .header {
-    position: fixed;
+    height: 50px;
+    background-color: #fff;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    box-shadow: 0 2px 3px rgba(10,10,10,.1);
+    padding: .55rem;
+
 }
 
-header img {
-    max-width: 50px;
-    margin-bottom: 1rem;
+.logo-container {
+    height: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.header img {
+    max-height: 1.75rem;
 }
 
 main {
     position: relative;
+    max-width: 55rem;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
-    margin-left: calc(50px + 2rem);
+    flex-direction: row;
+    padding: 2rem;
+
 }
 
 .text {
-    width: 30rem;
-}
-
-.home {
-    flex-direction: row;
+    width: 100%;
 }
 
 /* Home input */
+
+.home {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   height: calc(100vh - 50px);
+}
 
 .prefix {
     
@@ -99,18 +111,19 @@ main {
 /* Search */
 
 .search {
-    height: 1rem;
-    margin-bottom: 1rem;
+    width: 20rem;
+    height: 100%;
 }
 
 .search form {
     display: flex;
+    height: 100%;
 }
 
 .search form input[type="text"] {
     border: none;
-    height: 1rem;
-    background-color: #efefef;
+    
+    background-color: #fff;
     flex: 1;
 }
 
@@ -124,7 +137,7 @@ main {
 .logs, .results {
     list-style: none;
     margin-left: 0;
-    width: 30rem;
+    width: 100%;
 }
 
 .log-item {
@@ -163,7 +176,7 @@ main {
 /* Activty grid */
 
 .grid-container {
-    margin-left: 2rem;
+    margin-right: 1rem;
 }
 
 .grid-container label {
@@ -176,18 +189,11 @@ main {
 
 .top-legend {
     display: flex;
-    margin: 0 2rem .2rem 0;
+    margin: 0 0 .2rem 1.5rem;
 }
 
-.right-legend label, .left-legend label, .top-legend label {
+.left-legend label, .top-legend label {
     flex: 1;
-}
-
-.right-legend {
-    width: 1rem;
-    display: flex;
-    margin-left: .2rem;
-    flex-direction: column;
 }
 
 .left-legend {
@@ -200,12 +206,12 @@ main {
     display: flex;
     align-content: flex-start;
     flex-wrap: wrap;
-    max-width: 98px;
+    max-width: 150px;
 }
 
 .grid-square {
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     margin: 2px;
     background-color: #d5d9df;
     cursor: pointer;
@@ -285,12 +291,22 @@ main {
 
 /* Nightmode */
 
+.toggle-container {
+    width: 20rem;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .night-mode-toggle {
+    display: block;
     width: 1.2rem;
     height: 1.2rem;
     background: url('../img/bulb.jpg');
     background-size: cover;
     filter: grayscale(100%);
+    margin-right: .5rem;
 }
 
 .night {
@@ -300,6 +316,10 @@ main {
 .is-nightmode {
     background-color: #263137;
     color: #bdc3ce;
+}
+
+.is-nightmode .header {
+    background-color: #303d45;
 }
 
 .is-nightmode code {
@@ -326,7 +346,7 @@ main {
 }
 
 .is-nightmode .search form input[type="text"] {
-    background-color: #263137;
+    background-color: #303d45;
     color: #bdc3ce;
 }
 
@@ -361,25 +381,10 @@ main {
 /* Mobile */
 
 @media screen and (max-width: 45rem) {
-    body {
-        flex-direction: column;
-        padding: 1.5rem;
-    }
-    .header {
-        position: relative;
-        margin-bottom: 1.5rem;
-        flex-direction: row;
-    }
-    .header img {
-        margin-bottom: 0;
-        margin-right: 1rem;
-    }
+
     main {
-        margin-left: 0;
         flex-direction: column;
-    }
-    .home {
-        flex-direction: column;
+        padding: 1rem;
     }
     .demo {
         display: none;
@@ -390,8 +395,11 @@ main {
     .mobile {
         display: block;
     }
+    .logo-container a {
+        width: 45px;
+    }
     .grid-container {
-        margin-left: 0;
+        margin: 0;
         margin-bottom: 1rem;
         overflow-x: auto;
         overflow-y: hidden;
@@ -409,7 +417,7 @@ main {
 }
 
 @media screen and (min-width: 60rem) {
-    .text, .logs, .results {
+    .content {
         width: 40rem;
     }
 }
@@ -418,14 +426,16 @@ main {
 
 .demo {
     position: fixed;
-    top: -3rem;
-    margin-left: calc(50px + 40rem);
-    display: flex;
+    top: 0;
+    right: calc(50vw - 44rem);
+    z-index: -5;
+    width: 40rem;
     -webkit-animation: scroll 600s infinite; /* Safari 4+ */
     -moz-animation:    scroll 600s infinite; /* Fx 5+ */
     -o-animation:      scroll 600s infinite; /* Opera 12+ */
     animation:         scroll 600s infinite; /* IE 10+, Fx 29+ */
 }
+
 
 @-webkit-keyframes scroll {
     0%   { top: 0; }
