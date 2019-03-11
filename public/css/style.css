@@ -12,6 +12,7 @@ body {
     background-color: #efefef;
     color: #333;
     font-size: 100%;
+    overflow-y: scroll;
 }
 
 /* Basics */
@@ -36,7 +37,7 @@ ul {
 code {
     background-color: #333;
     color: #eee;
-    padding: 1rem;
+    padding: 1rem 0 1rem 1rem;
 }
 
 .profile-link {
@@ -46,11 +47,13 @@ code {
 /* Layout */
 
 .header {
+    position: relative;
     height: 50px;
     background-color: #fff;
     display: flex;
     box-shadow: 0 2px 3px rgba(10,10,10,.1);
     padding: .55rem;
+    z-index: 5;
 
 }
 
@@ -77,7 +80,10 @@ main {
     display: flex;
     flex-direction: row;
     padding: 2rem;
+}
 
+.content {
+    flex: 1;
 }
 
 .text {
@@ -93,10 +99,6 @@ main {
    height: calc(100vh - 50px);
 }
 
-.prefix {
-    
-}
-
 .home-form {
     margin-bottom: 1rem;
     display: flex;
@@ -105,7 +107,7 @@ main {
 .home-input, .home-input-submit {
     background-color: #333;
     color: #eee;
-    padding: 1rem;
+    padding: 1rem 1rem 1rem .5rem;
     border: none;
     border-radius: 0;
 }
@@ -142,7 +144,6 @@ main {
 .logs, .results {
     list-style: none;
     margin-left: 0;
-    width: 100%;
 }
 
 .log-item {
@@ -178,10 +179,30 @@ main {
     margin-left: .5rem;
 }
 
+/* Log list */
+
+.cap-container {
+    flex: 1;
+    padding: 1rem;
+}
+
+.cap-list {
+    list-style: none;
+    margin-left: 0;
+    margin-top: 1rem;
+}
+
+.cap-list li {
+    padding: 1rem;
+    background-color: #fff;
+    margin-bottom: 1rem;
+    color: rgba(60,67,80,.8);
+}
+
 /* Activty grid */
 
 .grid-container {
-    margin-right: 1rem;
+    margin-right: 2rem;
 }
 
 .grid-container label {
@@ -211,7 +232,7 @@ main {
     display: flex;
     align-content: flex-start;
     flex-wrap: wrap;
-    max-width: 150px;
+    width: 133px; /* haHaa */
 }
 
 .grid-square {
@@ -259,6 +280,14 @@ main {
 
 .mobile .top-legend {
     width: 1200px;
+}
+
+[data-balloon]:hover::before {
+    opacity: 0.7;
+}
+
+[data-balloon]:after {
+    background: rgba(17, 17, 17, 0.7);
 }
 
 /* Notifications */
@@ -346,6 +375,10 @@ main {
     color: #bdc3ce;
 }
 
+.is-nightmode .demo a {
+    color: #bdc3ce;
+}
+
 .is-nightmode .log-title {
     color: #fff;
 }
@@ -391,6 +424,9 @@ main {
         flex-direction: column;
         padding: 1rem;
     }
+    .home {
+        padding: 2rem;
+    }
     .demo {
         display: none;
     }
@@ -421,24 +457,31 @@ main {
     }
 }
 
-@media screen and (min-width: 60rem) {
-    .content {
-        width: 40rem;
-    }
-}
-
 /* Home demo animations */
 
 .demo {
     position: fixed;
     top: 0;
     right: calc(50vw - 44rem);
-    z-index: -5;
+    z-index: 1;
     width: 40rem;
-    -webkit-animation: scroll 600s infinite; /* Safari 4+ */
-    -moz-animation:    scroll 600s infinite; /* Fx 5+ */
-    -o-animation:      scroll 600s infinite; /* Opera 12+ */
-    animation:         scroll 600s infinite; /* IE 10+, Fx 29+ */
+    -webkit-animation: scroll 200s linear infinite running; /* Safari 4+ */
+    -moz-animation:    scroll 200s linear infinite running; /* Fx 5+ */
+    -o-animation:      scroll 200s linear infinite running; /* Opera 12+ */
+    animation:         scroll 200s linear infinite running; /* IE 10+, Fx 29+ */
+}
+
+.demo a {
+    color: rgba(60,67,80,.8);
+    text-decoration: none;
+}
+
+.demo:hover 
+{
+    -webkit-animation-play-state: paused;
+    -moz-animation-play-state: paused;
+    -o-animation-play-state: paused;
+     animation-play-state: paused;
 }
 
 

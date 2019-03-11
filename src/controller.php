@@ -51,6 +51,18 @@ function check_user(string $player_name) : bool
     return $result ? true : false; 
 }
 
+function get_clan_members(string $clan_name)
+{
+    $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
+    $stmt = $db->prepare("SELECT * FROM users WHERE us_clan = :clan_name");
+    $stmt->bindParam(':clan_name', $clan_name);
+    $stmt->execute();
+
+    $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+    $db = null;
+    return $result; 
+}
+
 function add_user(string $player_name, string $player_clan) : int
 {
     $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
@@ -172,6 +184,21 @@ function get_newest_logs()
     return $result;
 }
 
+function is_capped(int $player_id) : bool
+{
+    $reset_date = date('l ga', strtotime("Wednesday 16:00"));
+    $last_reset = strtotime('last '.$reset_date);
+    $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
+    $stmt = $db->prepare("SELECT * FROM logs WHERE lg_us_id = :player_id AND lg_details = 'I have capped at my Clan Citadel this week.' AND lg_ts >= :last_reset");
+    $stmt->bindParam(':player_id', $player_id);
+    $stmt->bindParam(':last_reset', $last_reset);
+    $stmt->execute();
+
+    $result = $stmt->fetch();
+    $db = null;
+    return $result ? true : false; 
+}
+
 /*
  *  Run-eMetrics section
  */
@@ -277,7 +304,7 @@ function get_player_clan(string $player_name)
 {
     $r = new \Ralph\api();
     if (isset($r->get_details($player_name)->clan)) {
-        return $r->get_details($player_name)->clan;
+        return norm($r->get_details($player_name)->clan);
     } else {
         return 'none';
     }

@@ -128,13 +128,15 @@ function load_date(date){
 
 var home_input = document.querySelector('.home-input');
 if(home_input){
-  home_input.focus();
+  //home_input.focus();
 }
 
 if (window.innerWidth < 500) {
   var mobile_grid = document.querySelector('.grid-container');
-  var today = document.querySelector('.today');
-  var today_index = Array.from(today.parentNode.children).indexOf(today);
-  let column = Math.ceil(today_index / 7);
-  mobile_grid.scrollLeft = (column * 22) - (mobile_grid.offsetWidth / 2 );
+  if(mobile_grid){
+      var today = document.querySelector('.today');
+    var today_index = Array.from(today.parentNode.children).indexOf(today);
+    let column = Math.ceil(today_index / 7);
+    mobile_grid.scrollLeft = (column * 22) - (mobile_grid.offsetWidth / 2 );
+  }
 }

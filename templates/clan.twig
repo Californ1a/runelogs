@@ -1,0 +1,37 @@
+{% include '/common/header.twig' %}
+    <main>
+
+        {% if capped is defined %}
+
+        	<section class="cap-container">
+	        	<h2>Capped 🎆</h2>
+	            <ul class="cap-list">
+	                {% for name in capped %}
+	                    <li class="member">
+	                        <span>{{ name|capitalize|replace({'+': ' '}) }}</span>
+	                    </li>
+	                {% endfor %}
+	            </ul>
+	        </section>
+
+	        <section class="cap-container">
+	            <h2>Not capped 😴</h2>
+	            <ul class="cap-list">
+	                {% for name in not_capped %}
+	                    <li class="member">
+	                        <span>{{ name|capitalize|replace({'+': ' '}) }}</span>
+	                    </li>
+	                {% endfor %}
+	            </ul>
+	        </section>
+
+    	{% else %}
+
+	    	<section class='text notification inf'>
+	            {{ message }}
+	        </section>
+
+        {% endif %}
+
+    </main>
+{% include '/common/footer.twig' %}

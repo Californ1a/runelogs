@@ -35,9 +35,33 @@ $app->get('/about', function ($request, $response, $args) {
 
 $app->get('/test', function ($request, $response, $args) {
     //oof ouch owie my debug function
-    echo norm('ciri_pavetta');
+    var_dump(is_capped(101));
 });
 
+/*
+ *  Clans
+ */
+
+$app->map(['GET','POST'], '/clan/[{clan}]', function ($request, $response, $args) {
+
+    if (isset($args['clan'])) {
+
+        $clan_name = norm($args['clan']);
+        $clan_members = get_clan_members($clan_name);
+
+        foreach($clan_members as $member) {
+            $cap_check = is_capped($member->us_id);
+
+            if($cap_check){
+                $args['capped'][] = $member->us_name;
+            } else {
+                $args['not_capped'][] = $member->us_name;
+            }
+        }
+    }
+
+    return $this->view->fetch('clan.twig', $args);
+});
 /*
  *  Profile (index, logs & search)
  */
