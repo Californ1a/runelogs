@@ -39,6 +39,34 @@ $app->get('/test', function ($request, $response, $args) {
 });
 
 /*
+ *  Fun stuff
+ */
+
+$app->get('/stats', function ($request, $response, $args) {
+    
+    $users = get_users();
+    foreach ($users as &$user) {
+        $logs = get_all_player_logs($user->us_id);
+        $user->streak = calculate_streak($logs);
+    }
+
+    usort($users, function($a, $b)
+    {
+        return $b->streak - $a->streak;
+    });
+
+    $args['top'] = array_slice($users, 0, 10);
+
+    $logs = get_all_logs();
+
+    $args['total'] = count($logs);
+
+    $args['week'] = calculate_week($logs);
+
+    return $this->view->fetch('stats.twig', $args);
+});
+
+/*
  *  Clans
  */
 
@@ -62,6 +90,7 @@ $app->map(['GET','POST'], '/clan/[{clan}]', function ($request, $response, $args
 
     return $this->view->fetch('clan.twig', $args);
 });
+
 /*
  *  Profile (index, logs & search)
  */

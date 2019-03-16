@@ -23,7 +23,11 @@ h1 {
 }
 
 a {
-    color: #2882b9;
+    color: #174B69;
+}
+
+a:hover {
+    color: #226d99;
 }
 
 p {
@@ -43,6 +47,7 @@ code {
 input {
     font-size: 100%;
 }
+
 
 .profile-link {
     text-decoration: none;
@@ -328,6 +333,10 @@ main {
     background-color: #2882b9;
 }
 
+.streak {
+    margin-right: 2rem;
+}
+
 /* Nightmode */
 
 .toggle-container {
@@ -359,6 +368,14 @@ main {
 
 .is-nightmode .header {
     background-color: #303d45;
+}
+
+.is-nightmode a {
+    color: #226d99;
+}
+
+.is-nightmode a:hover {
+    color: #2d8fc9;
 }
 
 .is-nightmode code {

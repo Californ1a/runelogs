@@ -1,0 +1,37 @@
+{% include '/common/header.twig' %}
+    <main>
+
+        <section class="streak">
+            <h3>consecutive days with at least 1 log:</h3>
+
+            <ul class="logs">
+                {% for user in top %}
+                    <li class="log-item">
+                        <div class="log-header">
+                            <h2 class="log-title">{{ user.us_name|capitalize|replace({'+': ' '}) }}</h2>
+                            <span class="log-timestamp">{{ (user.streak >= 10) ? '🔥' : '' }}</span>
+                        </div>
+                        
+                        <p class="log-details">{{ user.streak }} {{ (user.streak == 1) ? 'day' : 'days' }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+
+        </section>
+
+        <section class="week">
+
+        	<h3>week distribution:</h3>
+
+        	<ul class="logs">
+	        {% for day,counter in week %}
+	        	<li class="log-item">
+	        		<h2 class="log-title">{{ day|capitalize }}</h2>
+		        	<p class="log-details">{{ counter }} ({{ ((counter / total) * 100)|round }}%)</p>
+		        </li>
+	        {% endfor %}
+	    	</ul>
+	    </section>
+
+    </main>
+{% include '/common/footer.twig' %}

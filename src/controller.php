@@ -1,16 +1,11 @@
 <?php
-date_default_timezone_set('UTC'); //fuck jagex and fuck php
+date_default_timezone_set('UTC');
 require __DIR__ .  '/ralph.php';
 
 /*
  *  Runelo.gs controller
  *
- *  Legend:
- *      - DB functions (1 to 140)
- *      - Log update (140 to 255)
- *      - Helpers (255 to 280)
- *
- *  Yes everything is in 1 controller, it's only 280 lines you doofus take ur oop mvc elsewhere
+ *  Yes everything is in 1 controller, it's only 280 lines you doofus take ur oop mvc elsewhere :)
  */
 
 /*
@@ -100,6 +95,15 @@ function get_player_logs_by_date(int $player_id, int $date) : array
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+    $db = null;
+    return $result;
+}
+
+function get_all_logs() : array
+{
+    $db = new PDO('sqlite:'.__DIR__ .'/../data/db.sqlite');
+    $sql = "SELECT * FROM logs ORDER BY lg_ts";
+    $result = $db->query($sql)->fetchAll(PDO::FETCH_OBJ);
     $db = null;
     return $result;
 }
@@ -350,6 +354,43 @@ function generate_player_grid(array $player_logs)
 
     $grid = ob_get_clean();
     return $grid;
+}
+
+function calculate_streak(array $player_logs)
+{
+    $start = strtotime("midnight", time());
+    $end = strtotime("tomorrow", $start) - 1;
+    $streak = 0;
+
+    foreach(array_reverse($player_logs) as $log) {
+        if ($log->lg_ts >= $start && $log->lg_ts <= $end) {
+            $start = strtotime('-1 day', $start);
+            $end = strtotime("tomorrow", $start) - 1;
+            $streak++;
+        }
+    }
+    return $streak;
+}
+
+function calculate_week(array $logs)
+{
+    $week = [
+        "monday" => 0,
+        "tuesday" => 0,
+        "wednesday" => 0,
+        "thursday" => 0,
+        "friday" => 0,
+        "saturday" => 0,
+        "sunday" => 0
+    ];
+
+    foreach ($logs as $log) {
+
+        $day = strtolower(strftime("%A",$log->lg_ts));
+        $week[$day]++;
+    }
+    
+    return $week;
 }
 
 /*
