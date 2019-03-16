@@ -287,7 +287,7 @@ function update_logs()
  */
 function filter_log(string $t): bool
 {
-    $f = ['trisk', 'effigy', 'battle', 'whip', 'dark', 'Forcae', 'dragon'];
+    $f = ['triskelion', 'effigy', 'battle', 'whip', 'dark', 'Forcae', 'dragon', 'trail'];
     return array_intersect($f, explode(' ', strtolower($t))) ? false : true;
 }
 

@@ -40,6 +40,10 @@ code {
     padding: 1rem 0 1rem 1rem;
 }
 
+input {
+    font-size: 100%;
+}
+
 .profile-link {
     text-decoration: none;
 }
@@ -105,6 +109,7 @@ main {
 }
 
 .home-input, .home-input-submit {
+    font-family: monospace;
     background-color: #333;
     color: #eee;
     padding: 1rem 1rem 1rem .5rem;
@@ -397,19 +402,19 @@ main {
 }
 
 .is-nightmode .low {
-    background-color: hsl(50.1,100%,80%)
+    background-color: hsl(35.2,100%,80%)
 }
 
 .is-nightmode .medium {
-    background-color: hsl(50.1,100%,60%)
+    background-color: hsl(35.2,100%,60%)
 }
 
 .is-nightmode .high {
-    background-color: hsl(50.1,100%,40%)
+    background-color: hsl(35.2,100%,40%)
 }
 
 .is-nightmode .sweat {
-    background-color: hsl(50.1,100%,20%)
+    background-color: hsl(35.2,100%,20%)
 }
 
 .is-nightmode .today {
